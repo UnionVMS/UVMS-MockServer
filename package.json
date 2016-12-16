@@ -5,8 +5,13 @@
   "main": "server.js",
   "author": "hfpmartins",
   "license": "GPL-3.0",
+  "scripts":{
+    "start": "nodemon server.js"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "json-schema-faker": "^0.4.0",
+    "nodemon": "^1.11.0"
   }
 }
