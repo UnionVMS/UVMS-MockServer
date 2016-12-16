@@ -1,6 +1,12 @@
 var jsf = require('json-schema-faker');
 var globSchema = require('./genericSchema.js');
 var genSchema = new globSchema();
+var moment = require('moment');
+  
+jsf.format('fakeDate', function(gen, schema) {
+    var random = gen.faker.date.between(gen.faker.date.past(2), gen.faker.date.future(2));
+    return moment(random).format('YYYY-MM-DDTHH:mm:ss');
+});
 
 var activitySchema = function(){
     this.getComChannels = function(){
@@ -26,26 +32,45 @@ var activitySchema = function(){
                 },
                 departure: {
                     type: 'string',
-                    faker: 'date.future'
+                    format: 'fakeDate'
+                },
+                departureAt: {
+                    type: 'array',
+                    maxItems: 1,
+                    items: {
+                        type: 'string',
+                        chance: 'city'
+                    }
+                },
+                arrival: {
+                    type: 'string',
+                    format: 'fakeDate'
+                },
+                arrivalAt: {
+                    type: 'array',
+                    maxItems: 1,
+                    items: {
+                        type: 'string',
+                        chance: 'city'
+                    }
+                },
+                landing: {
+                    type: 'string',
+                    format: 'fakeDate'
+                },
+                landingAt: {
+                    type: 'array',
+                    maxItems: 4,
+                    items: {
+                        type: 'string',
+                        chance: 'city'
+                    }
                 }
             },
-            required: ['tripId', 'vesselName', 'departure']
+            required: ['tripId', 'vesselName', 'departure', 'departureAt', 'arrival', 'arrivalAt', 'landing', 'landingAt']
         };
         var data = jsf(schema);
         return genSchema.getSimpleSchema(data);
-        
-//        var data = {
-//            tripId: 'BEL-TRP-O16-2016_0021',
-//            vesselName: 'Beagle(BEL123456789)',
-//            departure: '2016-10-21T08:28:21',
-//            departureAt: ['BEZEE'],
-//            arrival: '2016-10-21T08:28:21',
-//            arrivalAt: ['BEOST'],
-//            landing: '2016-10-21T08:28:21',
-//            landingAt: ['BEOST']
-//        };
-//        
-//        return genSchema.getSimpleSchema(data);
     }
 };
 
