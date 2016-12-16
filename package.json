@@ -1,0 +1,12 @@
+{
+  "name": "mockserver",
+  "version": "0.0.1",
+  "description": "A nodejs server to provide mocked data for frontend development purposes",
+  "main": "server.js",
+  "author": "hfpmartins",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
+}
