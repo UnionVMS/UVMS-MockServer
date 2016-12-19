@@ -35,6 +35,12 @@ actRoutes.get('/comchannels', function(req, res){
 actRoutes.get('/catchdetails/:id', function(req, res){
     res.json(act.getTripCatchDetail());
 });
+actRoutes.get('/triplandingdetails/:id', function(req,res){
+    res.json(act.getTripCatchesLandingDetails());
+});
+actRoutes.get('/tripcatchevolution/:id', function(req,res){
+    res.json(act.getTripCatchesEvolution());
+});
 
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
