@@ -1,3 +1,14 @@
+/*
+Developed with the contribution of the European Commission - Directorate General for Maritime Affairs and Fisheries
+© European Union, 2015-2016.
+
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can
+redistribute it and/or modify it under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or any later version. The IFDM Suite is distributed in
+the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
+copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+*/
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -21,6 +32,21 @@ mdrRoutes.post('/cl/:acronym', function(req, res){
         case 'flux_gp_purposecode':
             data = mdr.getPurposeCodes(); 
             break;
+        case 'flux_fa_report_type':
+            data = mdr.getReportTypes();
+            break;
+        case 'gear_type':
+            data = mdr.getGearTypes();
+            break;
+        case 'flux_fa_type':
+            data = mdr.getActivityTypes();
+            break;
+        case 'weight_means':
+            data = mdr.getWeightMeans();
+            break;
+        case 'fa_catch_type':
+            data = mdr.getCatchTypes();
+            break;
         default:
             break;
     }
@@ -41,6 +67,18 @@ actRoutes.get('/triplandingdetails/:id', function(req,res){
 actRoutes.get('/tripcatchevolution/:id', function(req,res){
     res.json(act.getTripCatchesEvolution());
 });
+actRoutes.get('/fadetails/:fatype', function(req,res){
+    var data;
+    switch (req.params.fatype) {
+        case 'departure':
+            data = act.getDeparture();
+            break;
+    
+        default:
+            break;
+    }
+    res.json(data);
+})
 
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);

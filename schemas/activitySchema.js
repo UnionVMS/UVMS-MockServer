@@ -1,15 +1,38 @@
+/*
+Developed with the contribution of the European Commission - Directorate General for Maritime Affairs and Fisheries
+© European Union, 2015-2016.
+
+This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can
+redistribute it and/or modify it under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or any later version. The IFDM Suite is distributed in
+the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a
+copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
+*/
 var jsf = require('json-schema-faker');
 var globSchema = require('./genericSchema.js');
 var genSchema = new globSchema();
 var moment = require('moment');
-var species = [];
+var species, speciesCodes, gears, weightMeans, catchTypes;
 
 function initSpecies(){
     species = ['BEAGLE', 'SEAFOOD', 'GADUS', 'CODFISH', 'HADDOCK'];
 }
 
-function randomNumber(min, max){
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function initSpeciesCode(){
+    speciesCodes = ['COD','SOL','LEM','TUR','SAL'];
+}
+
+function initGears(){
+    gears = ['TBB', 'GND', 'SSC', 'GTR', 'LHM'];
+}
+
+function initWeights(){
+    weightMeans = ['ONBOARD','WEIGHED','ESTIMATED','SAMPLING','STEREOSCOPIC'];
+}
+
+function initCatchTypes(){
+    catchTypes = ['ONBOARD', 'KEPT_IN_NET', 'TAKEN_ONBOARD', 'DISCARDED', 'LOADED', 'UNLOADED'];
 }
 
 function getFishData(start, end, includeDiff){
@@ -55,7 +78,7 @@ function getEvolutionData(){
                     properties: {
                         speciesCode: {
                             type: 'string',
-                            format: 'fishSpeciesCode'
+                            format: 'fishSpecies'
                         },
                         weight: {
                             type: 'integer',
@@ -104,6 +127,80 @@ function calculateTotal(data){
     return data;
 }
 
+function getFishingData(){
+    initSpeciesCode();
+    initWeights();
+    initSpecies();
+    initCatchTypes();
+    
+    var schema = {
+        type: 'array',
+        minItems: 1,
+        maxItems: 5,
+        items: {
+            type: 'object',
+            properties: {
+                species: {
+                    type: 'string',
+                    format: 'fishSpeciesCode'
+                },
+                speciesName: {
+                    type: 'string',
+                    format: 'fishSpecies'
+                },
+                lsc: {
+                    type: 'integer',
+                    minimum: 800,
+                    maximum: 2000
+                },
+                bms: {
+                    type: 'integer',
+                    minimum: 100,
+                    maximum: 800
+                },
+                locations: {
+                    type: 'array',
+                    minimum: 1,
+                    maximum: 5,
+                    items: {
+                        type: 'object',
+                        properties: {
+                            name: {
+                                type: 'string',
+                                chance: 'city'
+                            },
+                            geometry: {
+                                type: 'string',
+                                format: 'wktPoint'
+                            }
+                        },
+                        required: ['name','geometry']
+                    }
+                },
+                details: {
+                    type: 'object',
+                    properties: {
+                        catchType: {
+                            type: 'string',
+                            format: 'catchType'
+                        },
+                        unit: 'kg',
+                        weightMeans: {
+                            type: 'string',
+                            format: 'weightMeans'
+                        }
+                    },
+                    required: ['catchType','unit','weightMeans']
+                }
+            },
+            required: ['lsc','bms','locations','details']
+        }
+    };
+    var data = jsf(schema);
+    
+    return data;
+}
+
 jsf.format('fakeDateServer', function(gen, schema) {
     var random = gen.faker.date.between(gen.faker.date.past(2), gen.faker.date.future(2));
     return moment(random).format('YYYY-MM-DDTHH:mm:ss');
@@ -116,19 +213,70 @@ jsf.format('fakeDateStandard', function(gen, schema) {
 });
 
 jsf.format('fakeWeight', function(gen, schema){
-    return randomNumber(0, 3000).toString();
+    return gen.chance.integer({min: 0, max: 3000}).toString();
 });
 
 jsf.format('fakeWeightAndDiff', function(gen, schema){
     var signal = ['+','-'];
     var sigToUse = signal[Math.floor(Math.random()*2)];
-    return randomNumber(0, 3000).toString() + '(' + sigToUse + randomNumber(1, 20) + ')';
+    return gen.chance.integer({min: 0, max: 3000}).toString(); + '(' + sigToUse + gen.chance.integer({min: 1, max: 20}).toString(); + ')';
 });
 
-jsf.format('fishSpeciesCode', function(gen, schema){
+jsf.format('fishSpecies', function(gen, schema){
     var idx = Math.floor(Math.random()*species.length);
     var spToUse = species.splice(idx, 1);
     return spToUse[0];
+});
+
+jsf.format('fishSpeciesCode', function(gen, schema){
+    var idx = Math.floor(Math.random()*speciesCodes.length);
+    var spToUse = speciesCodes.splice(idx, 1);
+    return spToUse[0];
+});
+
+jsf.format('gearsCode', function(gen, schema){
+    var idx = Math.floor(Math.random()*gears.length);
+    var gear = gears.splice(idx, 1);
+    return gear[0];
+});
+
+jsf.format('weightMeans', function(gen, schema){
+    var idx = Math.floor(Math.random()*weightMeans.length);
+    var weightToUse = weightMeans.splice(idx, 1);
+    return weightToUse[0];
+});
+
+jsf.format('catchType', function(gen, schema){
+    var idx = Math.floor(Math.random()*catchTypes.length);
+    var type = catchTypes.splice(idx, 1);
+    return type[0];
+});
+
+jsf.format('gearsRole', function(gen, schema){
+    var roles = ['On board', 'Deployed'];
+    return roles[Math.floor(Math.random()*roles.length)];
+});
+
+jsf.format('wktPoint', function(gen, schema){
+    return 'POINT(' + gen.chance.longitude() + ' ' + gen.chance.latitude() + ')';
+});
+
+jsf.format('meshSize', function(gen, schema){
+    return gen.chance.integer({min:50, max:250}).toString() + 'mm';
+});
+
+jsf.format('beamLength', function(gen, schema){
+    return gen.chance.integer({min:1, max:100}).toString() + 'm';
+});
+
+jsf.format('reportType', function(gen, schema){
+    var types = ['DECLARATION','NOTIFICATION'];
+    return types[Math.floor(Math.random()*types.length)];
+});
+
+jsf.format('purposeCode', function(gen, schema){
+    var types = [1,3,5,9];
+    return types[Math.floor(Math.random()*types.length)];
 });
 
 var activitySchema = function(){
@@ -353,6 +501,123 @@ var activitySchema = function(){
         
         return genSchema.getSimpleSchema(data);
     };
+    
+    this.getDeparture = function(){
+        var fishingData = getFishingData();
+        initSpecies();
+        initGears();
+        var schema = {
+            type: 'object',
+            properties: {
+                summary: {
+                    type: 'object',
+                    properties: {
+                        occurence: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        reason: 'Fishing',
+                        fisheryType: 'Demersal',
+                        targetedSpecies: {
+                            type: 'array',
+                            minItems: 1,
+                            maxItems: 5,
+                            items: {
+                                type: 'string',
+                                format: 'fishSpecies'
+                            }
+                        }
+                    },
+                    required: ['occurence','reason','fisheryType','targetedSpecies']
+                },
+                port: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            chance: 'city'
+                        },
+                        geometry: {
+                            type: 'string',
+                            format: 'wktPoint'
+                        }
+                    },
+                    required: ['name','geometry']
+                },
+                gears: {
+                    type: 'array',
+                    minItems: 1,
+                    maxItems: 4,
+                    items: {
+                        type: 'object',
+                        properties: {
+                            type: {
+                                type: 'string',
+                                format: 'gearsCode'
+                            },
+                            role: {
+                                type: 'string',
+                                format: 'gearsRole'
+                            },
+                            meshSize: {
+                                type: 'string',
+                                format: 'meshSize'
+                            },
+                            beamLength: {
+                                type: 'string',
+                                format: 'beamLength'
+                            },
+                            numBeams: {
+                                type: 'integer',
+                                minimum: 1,
+                                maximum: 5
+                            }
+                        },
+                        required: ['type','role','meshSize','beamLength','numBeams']
+                    }
+                },
+                reportDoc: {
+                    type: 'object',
+                    properties: {
+                        type: {
+                            type: 'string',
+                            format: 'reportType'
+                        },
+                        dateAccepted: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        refId: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        creationDate: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        purposeCode: {
+                            type: 'integer',
+                            formar: 'purposeCode'
+                        },
+                        purpose: {
+                            type: 'string',
+                            chance: 'sentence'
+                        }
+                    },
+                    required: ['type','dateAccepted','id','refId','creationDate','purposeCode','purpose']
+                },
+                fishingData: fishingData
+            },
+            required: ['summary','port','gears','reportDoc','fishingData']
+        };
+        var data = jsf(schema);
+        
+        return genSchema.getSimpleSchema(data);
+    }
 };
 
 module.exports = activitySchema;
