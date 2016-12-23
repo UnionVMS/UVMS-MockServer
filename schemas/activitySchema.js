@@ -59,9 +59,7 @@ function getFishData(start, end, includeDiff){
         }
     }
     
-    var finalData = jsf(schema);
-    return finalData;
-    
+    return jsf(schema);
 }
 
 function getEvolutionData(){
@@ -219,7 +217,7 @@ jsf.format('fakeWeight', function(gen, schema){
 jsf.format('fakeWeightAndDiff', function(gen, schema){
     var signal = ['+','-'];
     var sigToUse = signal[Math.floor(Math.random()*2)];
-    return gen.chance.integer({min: 0, max: 3000}).toString(); + '(' + sigToUse + gen.chance.integer({min: 1, max: 20}).toString(); + ')';
+    return gen.chance.integer({min: 0, max: 3000}).toString() + '(' + sigToUse + gen.chance.integer({min: 1, max: 20}).toString() + ')';
 });
 
 jsf.format('fishSpecies', function(gen, schema){
