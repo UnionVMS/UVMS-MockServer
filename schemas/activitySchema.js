@@ -598,8 +598,8 @@ var activitySchema = function(){
                             format: 'fakeDateServer'
                         },
                         purposeCode: {
-                            type: 'integer',
-                            formar: 'purposeCode'
+                            type: 'string',
+                            format: 'purposeCode'
                         },
                         purpose: {
                             type: 'string',
