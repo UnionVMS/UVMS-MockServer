@@ -191,7 +191,7 @@ function getFishingData(){
                     required: ['catchType','unit','weightMeans']
                 }
             },
-            required: ['lsc','bms','locations','details']
+            required: ['lsc','bms','locations','details', 'species', 'speciesName']
         }
     };
     var data = jsf(schema);
