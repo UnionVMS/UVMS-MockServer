@@ -41,9 +41,9 @@ var mdrSchema = function(){
         var codeList = [{
             code: 'PS', description: 'With purse lines (purse seines)'
         },{
-            code: 'PS1', description: 'one boat operated purse seines'
+            code: 'PS1', description: 'One boat operated purse seines'
         },{
-            code: 'PS2', description: 'two boats operated purse seines'
+            code: 'PS2', description: 'Two boats operated purse seines'
         },{
             code: 'LA', description: 'Without purse lines (lampara)'
         },{
@@ -53,25 +53,25 @@ var mdrSchema = function(){
         },{
             code: 'SSC', description: 'Scottish seines'
         },{
-            code: 'SPR', description: 'pair seines'
+            code: 'SPR', description: 'Pair seines'
         },{
             code: 'SX', description: 'Seine nets (not specified)'
         },{
-            code: 'TBB', description: 'beam trawls'
+            code: 'TBB', description: 'Beam trawls'
         },{
-            code: 'OTB', description: 'otter trawls'
+            code: 'OTB', description: 'Otter trawls'
         },{
-            code: 'PTB', description: 'pair trawls'
+            code: 'PTB', description: 'Pair trawls'
         },{
-            code: 'TBN', description: 'nephrops trawls'
+            code: 'TBN', description: 'Nephrops trawls'
         },{
-            code: 'TBS', description: 'shrimp trawls'
+            code: 'TBS', description: 'Shrimp trawls'
         },{
-            code: 'TB', description: 'bottom trawls (not specified)'
+            code: 'TB', description: 'Bottom trawls (not specified)'
         },{
-            code: 'OTM', description: 'otter trawls'
+            code: 'OTM', description: 'Otter trawls'
         },{
-            code: 'PTM', description: 'pair trawls'
+            code: 'PTM', description: 'Pair trawls'
         },{
             code: 'OTT', description: 'Otter twin trawls'
         },{
@@ -109,11 +109,11 @@ var mdrSchema = function(){
         },{
             code: 'HMD', description: 'Mechanized dredges'
         },{
-            code: 'MIS', description: 'MISCELLANEOUS GEAR'
+            code: 'MIS', description: 'Miscellaneous gear'
         },{
-            code: 'RG', description: 'RECREATIONAL FISHING GEAR'
+            code: 'RG', description: 'Recreational fishing gear'
         },{
-            code: 'NK', description: 'GEAR NOT KNOW OR NOT SPECIFIED '
+            code: 'NK', description: 'Gear not know or not specified'
         }];
         
         return genSchema.getPaginationSchema(codeList);
