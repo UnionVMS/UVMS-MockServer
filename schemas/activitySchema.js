@@ -63,7 +63,7 @@ function getFishData(start, end, includeDiff){
 }
 
 function getEvolutionData(){
-    initSpecies();
+    initSpeciesCode();
     var schema = {
         type: 'object',
         properties: {
@@ -76,7 +76,7 @@ function getEvolutionData(){
                     properties: {
                         speciesCode: {
                             type: 'string',
-                            format: 'fishSpecies'
+                            format: 'fishSpeciesCode'
                         },
                         weight: {
                             type: 'integer',
@@ -182,13 +182,17 @@ function getFishingData(){
                             type: 'string',
                             format: 'catchType'
                         },
-                        unit: 'kg',
+                        units: {
+                            type: 'integer',
+                            minimum: 10,
+                            maximum: 500
+                        },
                         weightMeans: {
                             type: 'string',
                             format: 'weightMeans'
                         }
                     },
-                    required: ['catchType','unit','weightMeans']
+                    required: ['catchType','units','weightMeans']
                 }
             },
             required: ['lsc','bms','locations','details', 'species', 'speciesName']
@@ -502,7 +506,7 @@ var activitySchema = function(){
     
     this.getDeparture = function(){
         var fishingData = getFishingData();
-        initSpecies();
+        initSpeciesCode();
         initGears();
         var schema = {
             type: 'object',
@@ -522,7 +526,7 @@ var activitySchema = function(){
                             maxItems: 5,
                             items: {
                                 type: 'string',
-                                format: 'fishSpecies'
+                                format: 'fishSpeciesCode'
                             }
                         }
                     },
