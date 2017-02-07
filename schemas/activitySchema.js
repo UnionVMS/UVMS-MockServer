@@ -299,6 +299,10 @@ var activitySchema = function(){
                     type: 'string',
                     chance: 'guid'
                 },
+                schemeId: {
+                    type: 'string',
+                    chance: 'bb_pin'
+                },
                 vesselName: {
                     type: 'string',
                     faker: 'name.findName'
@@ -340,7 +344,7 @@ var activitySchema = function(){
                     }
                 }
             },
-            required: ['tripId', 'vesselName', 'departure', 'departureAt', 'arrival', 'arrivalAt', 'landing', 'landingAt']
+            required: ['tripId', 'schemeId', 'vesselName', 'departure', 'departureAt', 'arrival', 'arrivalAt', 'landing', 'landingAt']
         };
         var data = jsf(schema);
         return genSchema.getSimpleSchema(data);
