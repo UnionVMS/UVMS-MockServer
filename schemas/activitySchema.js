@@ -125,6 +125,147 @@ function calculateTotal(data) {
     return data;
 }
 
+function getCatchLandingData() {
+    initSpeciesCode();
+    initWeights();
+    initSpecies();
+    initCatchTypes();
+    initGears();
+    var schema = {
+        type: 'array',
+        minItems: 1,
+        maxItems: 5,
+        items: {
+            type: 'object',
+            properties: {
+                species: {
+                    type: 'string',
+                    format: 'fishSpeciesCode'
+                },
+                speciesName: {
+                    type: 'string',
+                    format: 'fishSpecies'
+                },
+                lsc: {
+                    type: 'integer',
+                    minimum: 800,
+                    maximum: 2000
+                },
+                bms: {
+                    type: 'integer',
+                    minimum: 100,
+                    maximum: 800
+                },
+                catchType: {
+                    type: 'string',
+                    format: 'catchType'
+                },
+                units: {
+                    type: 'integer',
+                    minimum: 10,
+                    maximum: 500
+                },
+                totalWeight: {
+                    type: 'integer',
+                    minimum: 1000,
+                    maximum: 2000
+                },
+                catchDetails: {
+                    type: 'array',
+                    minItems: 1,
+                    maxItems: 5,
+                    items: {
+                        type: 'object',
+                        properties: {
+                            area: {
+                                type: 'string',
+                                chance: 'city'
+                            },
+                            productWeight: {
+                                type: 'integer',
+                                minimum: 1000,
+                                maximum: 2000
+                            },
+                            size: {
+                                type: 'string',
+                                format: 'fishSpeciesSize'
+                            },
+                            presentatior: {
+                                type: 'string',
+                                format: 'fishSpeciesPresentatior'
+                            },
+                            preservation: {
+                                type: 'string',
+                                format: 'fishSpeciesPreservation'
+                            },
+                            gearUsed: {
+                                type: 'string',
+                                format: 'gearUsed'
+                            },
+                            locations: {
+                                type: 'array',
+                                minimum: 1,
+                                maximum: 5,
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        name: {
+                                            type: 'string',
+                                            chance: 'city'
+                                        },
+                                        geometry: {
+                                            type: 'string',
+                                            format: 'wktPoint'
+                                        }
+                                    },
+                                    required: ['name', 'geometry']
+                                }
+                            },
+                            gears: {
+                                type: 'array',
+                                minItems: 1,
+                                maxItems: 4,
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        role: {
+                                            type: 'string',
+                                            format: 'gearsRole'
+                                        },
+                                        meshSize: {
+                                            type: 'string',
+                                            format: 'meshSize'
+                                        },
+                                        gearType: {
+                                            type: 'string',
+                                            format: 'gearUsed'
+                                        },
+                                        beamLength: {
+                                            type: 'string',
+                                            format: 'beamLength'
+                                        },
+                                        numBeams: {
+                                            type: 'integer',
+                                            minimum: 1,
+                                            maximum: 5
+                                        }
+                                    },
+                                    required: ['role', 'meshSize', 'beamLength', 'gearType', 'numBeams']
+                                }
+                            }
+                        },
+                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations', 'gears']
+                    }
+                }
+            },
+            required: ['species', 'speciesName', 'lsc', 'bms', 'catchType', 'units', 'totalWeight', 'catchDetails']
+        }
+    };
+    var data = jsf(schema);
+
+    return data;
+
+}
 function getFishingData() {
     initSpeciesCode();
     initWeights();
@@ -192,7 +333,7 @@ function getFishingData() {
                             format: 'weightMeans'
                         }
                     },
-                    required: ['catchType','units','weightMeans']
+                    required: ['catchType', 'units', 'weightMeans']
                 }
             },
             required: ['lsc', 'bms', 'locations', 'details', 'species', 'speciesName']
@@ -273,6 +414,26 @@ jsf.format('beamLength', function (gen, schema) {
 
 jsf.format('reportType', function (gen, schema) {
     var types = ['DECLARATION', 'NOTIFICATION'];
+    return types[Math.floor(Math.random() * types.length)];
+});
+
+jsf.format('gearUsed', function (gen, schema) {
+    var types = ['TBB', 'GND', 'SSC', 'GTR', 'LHM'];
+    return types[Math.floor(Math.random() * types.length)];
+});
+
+jsf.format('fishSpeciesSize', function (gen, schema) {
+    var types = ['LSC', 'BMS'];
+    return types[Math.floor(Math.random() * types.length)];
+});
+
+jsf.format('fishSpeciesPresentatior', function (gen, schema) {
+    var types = ['WHL', 'GUT'];
+    return types[Math.floor(Math.random() * types.length)];
+});
+
+jsf.format('fishSpeciesPreservation', function (gen, schema) {
+    var types = ['FRE'];
     return types[Math.floor(Math.random() * types.length)];
 });
 
@@ -812,7 +973,88 @@ var activitySchema = function () {
                 }
 
             },
-            required: ['arrival','port', 'gears', 'reportDoc']
+            required: ['arrival', 'port', 'gears', 'reportDoc']
+        };
+        var data = jsf(schema);
+
+        return genSchema.getSimpleSchema(data);
+    }
+
+    this.getLanding = function () {
+        var landingCatch = getCatchLandingData();
+        var schema = {
+            type: 'object',
+            properties: {
+                landingSummary: {
+                    type: 'object',
+                    properties: {
+                        occurence: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        startOfLanding: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        endOfLanding: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        }
+                    },
+                    required: ['occurence', 'startOfLanding', 'endOfLanding']
+                },
+                port: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            chance: 'city'
+                        },
+                        geometry: {
+                            type: 'string',
+                            format: 'wktPoint'
+                        }
+                    },
+                    required: ['name', 'geometry']
+                },
+                reportDoc: {
+                    type: 'object',
+                    properties: {
+                        type: {
+                            type: 'string',
+                            format: 'reportType'
+                        },
+                        dateAccepted: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        refId: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        creationDate: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        purposeCode: {
+                            type: 'string',
+                            format: 'purposeCode'
+                        },
+                        purpose: {
+                            type: 'string',
+                            chance: 'sentence'
+                        }
+                    },
+                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
+                },
+                landingCatchData: landingCatch
+
+            },
+            required: ['landingSummary', 'port', 'reportDoc', 'landingCatchData']
         };
         var data = jsf(schema);
 
