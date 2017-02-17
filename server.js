@@ -70,16 +70,16 @@ actRoutes.get('/tripcatchevolution/:id', function(req,res){
 actRoutes.get('/fadetails/:fatype', function(req,res){
     var data;
     switch (req.params.fatype) {
-        case 'Departure':
+        case 'departure':
             data = act.getDeparture();
             break;
-		case 'FishingOperation':
+		case 'fishingoperation':
             data = act.getFishingOperation();
             break;
-        case 'ArrivalNotification':
+        case 'arrivalnotification':
             data = act.getArrivalNotification();
             break;
-        case 'Arrival':
+        case 'arrival':
             data = act.getArrival();
             break;
     
