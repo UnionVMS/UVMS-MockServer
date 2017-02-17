@@ -70,10 +70,12 @@ actRoutes.get('/tripcatchevolution/:id', function(req,res){
 actRoutes.get('/fadetails/:fatype', function(req,res){
     var data;
     switch (req.params.fatype) {
-        case 'departure':
+        case 'Departure':
             data = act.getDeparture();
             break;
-    
+		case 'FishingOperation':
+            data = act.getFishingOperation();
+            break;
         default:
             break;
     }
