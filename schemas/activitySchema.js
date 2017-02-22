@@ -992,16 +992,23 @@ var activitySchema = function () {
                             type: 'string',
                             format: 'fakeDateServer'
                         },
-                        startOfLanding: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        endOfLanding: {
-                            type: 'string',
-                            format: 'fakeDateServer'
+                        landingTime: {
+                            type: 'object',
+                            properties: {
+                                startOfLanding: {
+                                    type: 'string',
+                                    format: 'fakeDateServer'
+                                },
+                                endOfLanding: {
+                                    type: 'string',
+                                    format: 'fakeDateServer'
+                                }
+                            },
+                            required: ['startOfLanding', 'endOfLanding']
                         }
+
                     },
-                    required: ['occurence', 'startOfLanding', 'endOfLanding']
+                    required: ['occurence','landingTime']
                 },
                 port: {
                     type: 'object',
