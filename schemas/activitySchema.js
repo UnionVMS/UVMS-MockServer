@@ -279,6 +279,8 @@ function getGears(){
 function getFishOperFishingData(){
     initSpeciesCode();
     initSpecies();
+	initWeights();
+    initCatchTypes();
     
     var schema = {
         type: 'array',
@@ -313,9 +315,28 @@ function getFishOperFishingData(){
 				speciesName: {
                     type: 'string',
                     format: 'fishSpecies'
+                },
+				details: {
+                    type: 'object',
+                    properties: {
+                        catchType: {
+                            type: 'string',
+                            format: 'catchType'
+                        },
+                        units: {
+                            type: 'integer',
+                            minimum: 10,
+                            maximum: 500
+                        },
+                        weightMeans: {
+                            type: 'string',
+                            format: 'weightMeans'
+                        }
+                    },
+                    required: ['catchType','units','weightMeans']
                 }
             },
-            required: ['locations', 'species', 'speciesName']
+            required: ['locations', 'species', 'speciesName', 'details']
         }
     };
 	
