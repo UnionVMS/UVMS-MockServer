@@ -73,7 +73,10 @@ actRoutes.get('/fadetails/:fatype', function(req,res){
         case 'departure':
             data = act.getDeparture();
             break;
-        case 'arrival_notification':
+		case 'fishingoperation':
+            data = act.getFishingOperation();
+            break;
+        case 'arrivalnotification':
             data = act.getArrivalNotification();
             break;
         case 'arrival':
