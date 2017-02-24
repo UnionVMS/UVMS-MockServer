@@ -220,41 +220,9 @@ function getCatchLandingData() {
                                     },
                                     required: ['name', 'geometry']
                                 }
-                            },
-                            gears: {
-                                type: 'array',
-                                minItems: 1,
-                                maxItems: 4,
-                                items: {
-                                    type: 'object',
-                                    properties: {
-                                        role: {
-                                            type: 'string',
-                                            format: 'gearsRole'
-                                        },
-                                        meshSize: {
-                                            type: 'string',
-                                            format: 'meshSize'
-                                        },
-                                        gearType: {
-                                            type: 'string',
-                                            format: 'gearUsed'
-                                        },
-                                        beamLength: {
-                                            type: 'string',
-                                            format: 'beamLength'
-                                        },
-                                        numBeams: {
-                                            type: 'integer',
-                                            minimum: 1,
-                                            maximum: 5
-                                        }
-                                    },
-                                    required: ['role', 'meshSize', 'beamLength', 'gearType', 'numBeams']
-                                }
                             }
                         },
-                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations', 'gears']
+                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations']
                     }
                 }
             },
@@ -262,6 +230,13 @@ function getCatchLandingData() {
         }
     };
     var data = jsf(schema);
+    
+    for(var i=0;i<data.length;i++){
+		for(var j=0;j<data[i].catchDetails.length;j++){
+            data[i].catchDetails[j].gears = getGears();
+        }
+	}
+    
 
     return data;
 
@@ -1201,7 +1176,6 @@ var activitySchema = function () {
     }
 
     this.getLanding = function () {
-        var landingCatch = getCatchLandingData();
         var schema = {
             type: 'object',
             properties: {
@@ -1277,14 +1251,14 @@ var activitySchema = function () {
                         }
                     },
                     required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                },
-                landingCatchData: landingCatch
-
+                }
             },
-            required: ['landingSummary', 'port', 'reportDoc', 'landingCatchData']
+            required: ['landingSummary', 'port', 'reportDoc']
         };
 		
         var data = jsf(schema);
+
+        data.landingCatchData = getCatchLandingData();
 
         return genSchema.getSimpleSchema(data);
     }
