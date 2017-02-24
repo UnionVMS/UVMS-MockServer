@@ -82,6 +82,9 @@ actRoutes.get('/fadetails/:fatype', function(req,res){
         case 'arrival':
             data = act.getArrival();
             break;
+        case 'landing':
+            data = act.getLanding();
+            break;
     
         default:
             break;
