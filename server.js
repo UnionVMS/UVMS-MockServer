@@ -47,6 +47,15 @@ mdrRoutes.post('/cl/:acronym', function(req, res){
         case 'fa_catch_type':
             data = mdr.getCatchTypes();
             break;
+        case 'fish_presentation':
+            data = mdr.getPresentationCodes();
+            break;
+        case 'fish_preservation':
+            data = mdr.getPreservationCodes();
+            break;
+        case 'fish_packaging':
+            data = mdr.getFishPackaging();
+            break;
         default:
             break;
     }

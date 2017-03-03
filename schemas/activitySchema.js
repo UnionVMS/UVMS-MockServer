@@ -10,10 +10,14 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more d
 copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 */
 var jsf = require('json-schema-faker');
+var faker = require('faker');
+var Chance = require('chance');
+var u = require('underscore');
+
 var globSchema = require('./genericSchema.js');
 var genSchema = new globSchema();
 var moment = require('moment');
-var species, speciesCodes, gears, weightMeans, catchTypes;
+var species, speciesCodes, gears, weightMeans, catchTypes, presentation, preservation, freshness, packaging;
 
 function initSpecies() {
     species = ['BEAGLE', 'SEAFOOD', 'GADUS', 'CODFISH', 'HADDOCK'];
@@ -34,6 +38,23 @@ function initWeights() {
 function initCatchTypes() {
     catchTypes = ['ONBOARD', 'KEPT_IN_NET', 'TAKEN_ONBOARD', 'DISCARDED', 'LOADED', 'UNLOADED'];
 }
+
+function initPresentation(){
+    presentation = ['FIL', 'GHT', 'GUL', 'GUT', 'HEA', 'JAP', 'SAL'];
+}
+
+function initPreservation(){
+    preservation = ['ALI', 'BOI', 'DRI', 'FRE', 'FRO', 'SAL', 'SMO'];
+}
+
+function initFreshness(){
+    freshness = ['A', 'B', 'E', 'V', 'SO'];
+}
+
+function initPackaging(){
+    packaging = ['CRT','BOX','BGS','BLC','BUL','CNT'];
+}
+
 
 function getFishData(start, end, includeDiff) {
     var fishSpecies = ['cod', 'sol', 'lem', 'tur'];
@@ -241,6 +262,113 @@ function getCatchLandingData() {
     return data;
 
 }
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getLocationAreas(){
+    var areaTypes = ['territory', 'fao_area', 'ices_stat_rectangle', 'effort_zone', 'rfmo', 'gfcm_gsa', 'gfcm_stat_rectangle'];
+    var chance = new Chance();
+    var num = getRandomInt(1, 6);
+    var sampledAreas = u.sample(areaTypes, num);
+    var locations = {};
+    for (var i = 0; i < sampledAreas.length; i++){
+        locations[sampledAreas[i]] = chance.city(); 
+    }
+    
+    return locations;
+}
+
+function getUniqueGearTypeCode(){
+    initGears();
+    return u.sample(gears, 1)[0];
+}
+
+function getProcessedProducts(){
+    initCatchTypes();
+    initSpeciesCode();
+    initGears();
+    initPresentation();
+    initPreservation(); 
+    initFreshness();
+    initPackaging();
+    
+    var schema = {
+        type: 'array',
+        minItems: 1,
+        maxItems: 5,
+        items: {
+            type: 'object',
+            properties: {
+                type:{
+                    type: 'string',
+                    format: 'catchType'
+                },
+                species: {
+                    type: 'string',
+                    format: 'fishSpeciesCode'
+                },
+                presentation: {
+                    type: 'string',
+                    format: 'presentation'
+                },
+                preservation: {
+                    type: 'string',
+                    format: 'preservation'
+                },
+                freshness: {
+                    type: 'string',
+                    format: 'freshness'
+                },
+                conversionFactor: {
+                    type: 'number',
+                    chance: {
+                        'floating': {
+                            'min': 1,
+                            'max': 2,
+                            'fixed': 1
+                        }
+                    }
+                },
+                weight: {
+                    type: 'integer',
+                    minimum: 25,
+                    maximum: 3500
+                },
+                quantity: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 90
+                },
+                packageWeight: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 50
+                },
+                packageQuantity: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 200
+                },
+                packagingType: {
+                    type: 'string',
+                    format: 'packaging'
+                }
+            },
+            required: ['type', 'species', 'presentation', 'preservation', 'freshness', 'conversionFactor', 'weight', 'quantity', 'packageWeight', 'packageQuantity', 'packagingType']
+        }
+    };
+    var data = jsf(schema);
+    
+    for (var i = 0; i < data.length; i++){
+        data[i].gear = getUniqueGearTypeCode();
+        data[i].locations = getLocationAreas();
+    }
+
+    return data;
+}
+
 function getFishingData() {
     initSpeciesCode();
     initWeights();
@@ -522,6 +650,30 @@ jsf.format('catchType', function (gen, schema) {
     return type[0];
 });
 
+jsf.format('presentation', function(gen, schema){
+    var idx = Math.floor(Math.random() * presentation.length);
+    var pres = presentation.splice(idx, 1);
+    return pres[0];
+});
+
+jsf.format('preservation', function(gen, schema){
+    var idx = Math.floor(Math.random() * preservation.length);
+    var pres = preservation.splice(idx, 1);
+    return pres[0];
+});
+
+jsf.format('freshness', function(gen, schema){
+    var idx = Math.floor(Math.random() * freshness.length);
+    var fresh = freshness.splice(idx, 1);
+    return fresh[0];
+});
+
+jsf.format('packaging', function(gen, schema){
+    var idx = Math.floor(Math.random() * packaging.length);
+    var pack = packaging.splice(idx, 1);
+    return pack[0];
+});
+
 jsf.format('gearsRole', function (gen, schema) {
     var roles = ['On board', 'Deployed'];
     return roles[Math.floor(Math.random() * roles.length)];
@@ -574,8 +726,8 @@ jsf.format('purposeCode', function (gen, schema) {
     return types[Math.floor(Math.random() * types.length)];
 });
 
-var activitySchema = function () {
-    this.getComChannels = function () {
+    var activitySchema = function () {
+        this.getComChannels = function () {
         var data = {
             code: 'FLUX',
             description: 'FLUX'
@@ -879,11 +1031,11 @@ var activitySchema = function () {
                 },
                 fishingData: fishingData
             },
-            required: ['summary','port','gears','reportDoc','fishingData']
+            required: ['summary','port','reportDoc','fishingData']
         };
         var data = jsf(schema);
-		
 		data.gears = getGears();
+		data.procProducts = getProcessedProducts();
         
         return genSchema.getSimpleSchema(data);
     }
