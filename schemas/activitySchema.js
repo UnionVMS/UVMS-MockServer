@@ -315,7 +315,6 @@ function getFishingData() {
         }
     };
     var data = jsf(schema);
-    data.gears = getGears
     return data;
 }
 
