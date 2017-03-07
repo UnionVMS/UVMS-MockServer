@@ -1179,7 +1179,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                landingSummary: {
+                summary: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -1253,7 +1253,7 @@ var activitySchema = function () {
                     required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
                 }
             },
-            required: ['landingSummary', 'port', 'reportDoc']
+            required: ['summary', 'port', 'reportDoc']
         };
 
         var data = jsf(schema);
