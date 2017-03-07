@@ -1035,7 +1035,7 @@ jsf.format('purposeCode', function (gen, schema) {
         };
         var data = jsf(schema);
 		data.gears = getGears();
-		data.procProducts = getProcessedProducts();
+		data.processingProducts = getProcessedProducts();
         
         return genSchema.getSimpleSchema(data);
     }
