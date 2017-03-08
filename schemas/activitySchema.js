@@ -369,27 +369,76 @@ function getGears(){
 						type: 'string',
 						format: 'gearsRole'
 					},
-					meshSize: {
-						type: 'string',
-						format: 'meshSize'
-					},
-					beamLength: {
-						type: 'string',
-						format: 'beamLength'
-					},
-					numBeams: {
-						type: 'integer',
-						minimum: 1,
-						maximum: 5
+					characteristics: {
+						type: 'object',
+						properties: {
+							meshSize: {
+								type: 'string',
+								format: 'meshSize'
+							},
+							beamLength: {
+								type: 'string',
+								format: 'beamLength'
+							},
+							numBeams: {
+								type: 'integer',
+								minimum: 1,
+								maximum: 5
+							}
+						},
+						required: ['meshSize','beamLength','numBeams']
 					}
 				},
-				required: ['type','role','meshSize','beamLength','numBeams']
+				required: ['type','role','characteristics']
 			}
 		};
 		
 		var data = jsf(schema);
 		
 		return data;
+}
+
+function getFaDoc(){
+	return {
+		type: 'object',
+		properties: {
+			type: {
+				type: 'string',
+				format: 'reportType'
+			},
+			dateAccepted: {
+				type: 'string',
+				format: 'fakeDateServer'
+			},
+			flux_caractheristics: {
+				type: 'object',
+				properties: {
+					id: {
+						type: 'string',
+						chance: 'guid'
+					},
+					refId: {
+						type: 'string',
+						chance: 'guid'
+					},
+					creationDate: {
+						type: 'string',
+						format: 'fakeDateServer'
+					},
+					purposeCode: {
+						type: 'string',
+						format: 'purposeCode'
+					},
+					purpose: {
+						type: 'string',
+						chance: 'sentence'
+					}
+				},
+				required: ['id','refId','creationDate','purposeCode','purpose']
+			}
+		},
+		required: ['type','dateAccepted','flux_caractheristics']
+	}
 }
 
 function getFishOperFishingData(){
@@ -843,40 +892,7 @@ var activitySchema = function () {
                     },
                     required: ['name', 'geometry']
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type','dateAccepted','id','refId','creationDate','purposeCode','purpose']
-                },
+                reportDoc: getFaDoc(),
                 fishingData: fishingData
             },
             required: ['summary','port','gears','reportDoc','fishingData']
@@ -907,8 +923,8 @@ var activitySchema = function () {
 							  "minimum": 0,
 							  "maximum": 200,
 						},
-                        fishery_type: 'Demersal',
-                        targetted_species: {
+                        fisheryType: 'Demersal',
+                        targetedSpecies: {
                             type: 'array',
                             minItems: 1,
                             maxItems: 5,
@@ -925,7 +941,7 @@ var activitySchema = function () {
 							required: ['duration']
 						}
                     },
-                    required: ['occurence','vessel_activity','no_operations','fishery_type','targetted_species','fishing_time']
+                    required: ['occurence','vessel_activity','no_operations','fisheryType','targetedSpecies','fishing_time']
                 },
                 port: {
                     type: 'object',
@@ -941,40 +957,7 @@ var activitySchema = function () {
                     },
                     required: ['name','geometry']
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type','dateAccepted','id','refId','creationDate','purposeCode','purpose']
-                }
+                reportDoc: getFaDoc()
             },
             required: ['summary', 'port', 'gears', 'reportDoc', 'fishingData']
         };
@@ -1019,40 +1002,7 @@ var activitySchema = function () {
                     },
                     required: ['name', 'geometry']
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                },
+                reportDoc: getFaDoc(),
                 arrivalCatchData: arrivalData
             },
             required: ['arrival', 'port', 'reportDoc', 'arrivalCatchData']
@@ -1132,41 +1082,7 @@ var activitySchema = function () {
                         required: ['type', 'role', 'meshSize', 'beamLength', 'numBeams']
                     }
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
-
+                reportDoc: getFaDoc()
             },
             required: ['arrival', 'port', 'gears', 'reportDoc']
         };
@@ -1218,40 +1134,7 @@ var activitySchema = function () {
                     },
                     required: ['name', 'geometry']
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
+                reportDoc: getFaDoc()
             },
             required: ['landingSummary', 'port', 'reportDoc']
         };
