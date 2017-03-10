@@ -82,24 +82,24 @@ actRoutes.get('/fadetails/:fatype', function (req, res) {
         case 'departure':
             data = act.getDeparture();
             break;
-        case 'fishingoperation':
+        case 'fishing_operation':
             data = act.getFishingOperation();
             break;
-        case 'arrivalnotification':
+        case 'arrival_notification':
             data = act.getArrivalNotification();
             break;
-        case 'arrival':
+        case 'arrival_declaration':
             data = act.getArrival();
             break;
         case 'landing':
             data = act.getLanding();
             break;
         case 'discard':
-        case 'areaentry':
-        case 'areaexit':
+        case 'area_entry':
+        case 'area_exit':
         case 'transhipment':
         case 'relocation':
-        case 'jointfishingoperation':
+        case 'joint_fishing_operation':
             data = act.jointfishingoperation();
             break;
         default:

@@ -191,7 +191,7 @@ function getCatchLandingData() {
                     minimum: 1000,
                     maximum: 2000
                 },
-                catchDetails: {
+                catches: {
                     type: 'array',
                     minItems: 1,
                     maxItems: 5,
@@ -227,34 +227,21 @@ function getCatchLandingData() {
                                 type: 'array',
                                 minimum: 1,
                                 maximum: 5,
-                                items: {
-                                    type: 'object',
-                                    properties: {
-                                        name: {
-                                            type: 'string',
-                                            chance: 'city'
-                                        },
-                                        geometry: {
-                                            type: 'string',
-                                            format: 'wktPoint'
-                                        }
-                                    },
-                                    required: ['name', 'geometry']
-                                }
+                                items: getLocation()
                             }
                         },
                         required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations']
                     }
                 }
             },
-            required: ['species', 'speciesName', 'lsc', 'bms', 'catchType', 'units', 'totalWeight', 'catchDetails']
+            required: ['species', 'speciesName', 'lsc', 'bms', 'catchType', 'units', 'totalWeight', 'catches']
         }
     };
     var data = jsf(schema);
 
     for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].catchDetails.length; j++) {
-            data[i].catchDetails[j].gears = getGears();
+        for (var j = 0; j < data[i].catches.length; j++) {
+            data[i].catches[j].gears = getGears();
         }
     }
 
@@ -404,20 +391,7 @@ function getFishingData() {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
                 details: {
                     type: 'object',
@@ -479,47 +453,120 @@ function getClassProperties() {
     return data;
 }
 
-function getGears() {
-    initGears();
-    var schema = {
-        type: 'array',
-        minItems: 1,
-        maxItems: 4,
-        items: {
-            type: 'object',
-            properties: {
-                type: {
-                    type: 'string',
-                    format: 'gearsCode'
-                },
-                role: {
-                    type: 'string',
-                    format: 'gearsRole'
-                },
-                meshSize: {
-                    type: 'string',
-                    format: 'meshSize'
-                },
-                beamLength: {
-                    type: 'string',
-                    format: 'beamLength'
-                },
-                numBeams: {
-                    type: 'integer',
-                    minimum: 1,
-                    maximum: 5
-                }
-            },
-            required: ['type', 'role', 'meshSize', 'beamLength', 'numBeams']
-        }
-    };
-
-    var data = jsf(schema);
-
-    return data;
+function getGears(){
+	initGears();
+	var schema = {
+			type: 'array',
+			minItems: 1,
+			maxItems: 4,
+			items: {
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						format: 'gearsCode'
+					},
+					role: {
+						type: 'string',
+						format: 'gearsRole'
+					},
+					meshSize: {
+                        type: 'string',
+                        format: 'meshSize'
+                    },
+                    lengthWidth: {
+                        type: 'string',
+                        format: 'beamLength'
+                    },
+                    numberOfGears: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 5
+                    }
+				},
+				required: ['type','role','meshSize','lengthWidth','numberOfGears']
+			}
+		};
+		
+		var data = jsf(schema);
+		
+		return data;
 }
 
-function getFishOperFishingData() {
+function getFaDoc(){
+	return {
+		type: 'object',
+		properties: {
+			type: {
+				type: 'string',
+				format: 'reportType'
+			},
+			acceptedDate: {
+				type: 'string',
+				format: 'fakeDateServer'
+			},
+			id: {
+                type: 'string',
+                chance: 'guid'
+            },
+            refId: {
+                type: 'string',
+                chance: 'guid'
+            },
+            creationDate: {
+                type: 'string',
+                format: 'fakeDateServer'
+            },
+            purposeCode: {
+                type: 'string',
+                format: 'purposeCode'
+            },
+            purpose: {
+                type: 'string',
+                chance: 'sentence'
+            },
+            relatedReports: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        schemeId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        },
+                    },
+                    required: ['id', 'schemeId']
+                }
+            }
+		},
+		required: ['type','acceptedDate','id','refId','creationDate','purposeCode','purpose','relatedReports']
+	}
+}
+
+function getLocation(){
+	return {
+            type: 'object',
+            properties: {
+                name: {
+                    type: 'string',
+                    chance: 'city'
+                },
+                geometry: {
+                    type: 'string',
+                    format: 'wktPoint'
+                }
+            },
+            required: ['name', 'geometry']
+        };
+}
+
+function getFishOperFishingData(){
     initSpeciesCode();
     initSpecies();
     initWeights();
@@ -536,20 +583,7 @@ function getFishOperFishingData() {
                     type: 'array',
                     minimum: 1,
                     maximum: 1,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
                 species: {
                     type: 'string',
@@ -959,7 +993,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -980,57 +1014,11 @@ jsf.format('purposeCode', function (gen, schema) {
                     },
                     required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                },
-                fishingData: fishingData
+                locations: getLocation(),
+                reportDetails: getFaDoc(),
+                catches: fishingData
             },
-            required: ['summary', 'port', 'gears', 'reportDoc', 'fishingData']
+            required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 		data.gears = getGears();
@@ -1045,21 +1033,21 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
                             type: 'string',
                             format: 'fakeDateServer'
                         },
-                        vessel_activity: 'FSH - Fishing',
-                        no_operations: {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 200,
-                        },
-                        fishery_type: 'Demersal',
-                        targetted_species: {
+						vessel_activity: 'FSH - Fishing',
+						no_operations: {
+							"type": "integer",
+							  "minimum": 0,
+							  "maximum": 200,
+						},
+                        fisheryType: 'Demersal',
+                        targetedSpecies: {
                             type: 'array',
                             minItems: 1,
                             maxItems: 5,
@@ -1076,62 +1064,16 @@ jsf.format('purposeCode', function (gen, schema) {
                             required: ['duration']
                         }
                     },
-                    required: ['occurence', 'vessel_activity', 'no_operations', 'fishery_type', 'targetted_species', 'fishing_time']
+                    required: ['occurence','vessel_activity','no_operations','fisheryType','targetedSpecies','fishing_time']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
+                locations: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'port', 'gears', 'reportDoc', 'fishingData']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
         var data = jsf(schema);
 
-        data.fishingData = getFishOperFishingData();
+        data.catches = getFishOperFishingData();
         data.gears = getGears();
 
         return genSchema.getSimpleSchema(data);
@@ -1142,7 +1084,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                arrival: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         estimatedArrival: {
@@ -1156,57 +1098,11 @@ jsf.format('purposeCode', function (gen, schema) {
                     },
                     required: ['estimatedArrival', 'reason']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                },
-                arrivalCatchData: arrivalData
+                locations: getLocation(),
+                reportDetails: getFaDoc(),
+                catches: arrivalData
             },
-            required: ['arrival', 'port', 'reportDoc', 'arrivalCatchData']
+            required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 
@@ -1219,7 +1115,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                arrival: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         arrivalTime: {
@@ -1237,91 +1133,14 @@ jsf.format('purposeCode', function (gen, schema) {
                     },
                     required: ['arrivalTime', 'reason', 'intendedLandingTime']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                gears: {
-                    type: 'array',
-                    minItems: 1,
-                    maxItems: 4,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            type: {
-                                type: 'string',
-                                format: 'gearsCode'
-                            },
-                            role: {
-                                type: 'string',
-                                format: 'gearsRole'
-                            },
-                            meshSize: {
-                                type: 'string',
-                                format: 'meshSize'
-                            },
-                            beamLength: {
-                                type: 'string',
-                                format: 'beamLength'
-                            },
-                            numBeams: {
-                                type: 'integer',
-                                minimum: 1,
-                                maximum: 5
-                            }
-                        },
-                        required: ['type', 'role', 'meshSize', 'beamLength', 'numBeams']
-                    }
-                },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
-
+                locations: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['arrival', 'port', 'gears', 'reportDoc']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
         var data = jsf(schema);
+
+        data.gears = getGears();
 
         return genSchema.getSimpleSchema(data);
     }
@@ -1330,7 +1149,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -1355,61 +1174,15 @@ jsf.format('purposeCode', function (gen, schema) {
                     },
                     required: ['occurence', 'landingTime']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
+                locations: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'port', 'reportDoc']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
 
         var data = jsf(schema);
 
-        data.landingCatchData = getCatchLandingData();
+        data.catches = getFishOperFishingData();
 
         return genSchema.getSimpleSchema(data);
     }
@@ -1418,7 +1191,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -1447,57 +1220,11 @@ jsf.format('purposeCode', function (gen, schema) {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
-                reportDoc: {
-                    type: 'object',
-                    properties: {
-                        type: {
-                            type: 'string',
-                            format: 'reportType'
-                        },
-                        dateAccepted: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        id: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        refId: {
-                            type: 'string',
-                            chance: 'guid'
-                        },
-                        creationDate: {
-                            type: 'string',
-                            format: 'fakeDateServer'
-                        },
-                        purposeCode: {
-                            type: 'string',
-                            format: 'purposeCode'
-                        },
-                        purpose: {
-                            type: 'string',
-                            chance: 'sentence'
-                        }
-                    },
-                    required: ['type', 'dateAccepted', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose']
-                }
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'locations', 'reportDoc']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
 
         var data = jsf(schema);
