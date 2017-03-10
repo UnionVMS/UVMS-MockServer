@@ -202,14 +202,14 @@ function getCatchLandingData() {
                                 type: 'string',
                                 format: 'gearUsed'
                             },
-                            ports: {
+                            locations: {
                                 type: 'array',
                                 minimum: 1,
                                 maximum: 5,
                                 items: getLocation()
                             }
                         },
-                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'ports']
+                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations']
                     }
                 }
             },
@@ -259,7 +259,7 @@ function getFishingData() {
                     minimum: 100,
                     maximum: 800
                 },
-                ports: {
+                locations: {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
@@ -285,7 +285,7 @@ function getFishingData() {
                     required: ['catchType', 'units', 'weightMeans']
                 }
             },
-            required: ['lsc', 'bms', 'ports', 'details', 'species', 'speciesName']
+            required: ['lsc', 'bms', 'locations', 'details', 'species', 'speciesName']
         }
     };
     var data = jsf(schema);
@@ -451,7 +451,7 @@ function getFishOperFishingData(){
         items: {
             type: 'object',
             properties: {
-                ports: {
+                locations: {
                     type: 'array',
                     minimum: 1,
                     maximum: 1,
@@ -485,7 +485,7 @@ function getFishOperFishingData(){
                     required: ['catchType', 'units', 'weightMeans']
                 }
             },
-            required: ['ports', 'species', 'speciesName', 'details']
+            required: ['locations', 'species', 'speciesName', 'details']
         }
     };
 
@@ -862,11 +862,11 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies']
                 },
-                ports: getLocation(),
+                locations: getLocation(),
                 reportDetails: getFaDoc(),
                 catches: fishingData
             },
-            required: ['activityDetails', 'ports', 'reportDetails', 'catches']
+            required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 
@@ -914,10 +914,10 @@ var activitySchema = function () {
                     },
                     required: ['occurence','vessel_activity','no_operations','fisheryType','targetedSpecies','fishing_time']
                 },
-                ports: getLocation(),
+                locations: getLocation(),
                 reportDetails: getFaDoc()
             },
-            required: ['activityDetails', 'ports', 'reportDetails']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
         var data = jsf(schema);
 
@@ -946,11 +946,11 @@ var activitySchema = function () {
                     },
                     required: ['estimatedArrival', 'reason']
                 },
-                ports: getLocation(),
+                locations: getLocation(),
                 reportDetails: getFaDoc(),
                 catches: arrivalData
             },
-            required: ['activityDetails', 'ports', 'reportDetails', 'catches']
+            required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 
@@ -981,10 +981,10 @@ var activitySchema = function () {
                     },
                     required: ['arrivalTime', 'reason', 'intendedLandingTime']
                 },
-                ports: getLocation(),
+                locations: getLocation(),
                 reportDetails: getFaDoc()
             },
-            required: ['activityDetails', 'ports', 'reportDetails']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
         var data = jsf(schema);
 
@@ -1022,10 +1022,10 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'landingTime']
                 },
-                ports: getLocation(),
+                locations: getLocation(),
                 reportDetails: getFaDoc()
             },
-            required: ['activityDetails', 'ports', 'reportDetails']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
 
         var data = jsf(schema);
@@ -1063,7 +1063,7 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'landingTime']
                 },
-                ports: {
+                locations: {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
@@ -1071,7 +1071,7 @@ var activitySchema = function () {
                 },
                 reportDetails: getFaDoc()
             },
-            required: ['activityDetails', 'ports', 'reportDetails']
+            required: ['activityDetails', 'locations', 'reportDetails']
         };
 
         var data = jsf(schema);
