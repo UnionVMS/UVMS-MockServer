@@ -170,7 +170,7 @@ function getCatchLandingData() {
                     minimum: 1000,
                     maximum: 2000
                 },
-                catchDetails: {
+                catches: {
                     type: 'array',
                     minItems: 1,
                     maxItems: 5,
@@ -202,38 +202,25 @@ function getCatchLandingData() {
                                 type: 'string',
                                 format: 'gearUsed'
                             },
-                            locations: {
+                            ports: {
                                 type: 'array',
                                 minimum: 1,
                                 maximum: 5,
-                                items: {
-                                    type: 'object',
-                                    properties: {
-                                        name: {
-                                            type: 'string',
-                                            chance: 'city'
-                                        },
-                                        geometry: {
-                                            type: 'string',
-                                            format: 'wktPoint'
-                                        }
-                                    },
-                                    required: ['name', 'geometry']
-                                }
+                                items: getLocation()
                             }
                         },
-                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'locations']
+                        required: ['area', 'productWeight', 'size', 'presentatior', 'preservation', 'gearUsed', 'ports']
                     }
                 }
             },
-            required: ['species', 'speciesName', 'lsc', 'bms', 'catchType', 'units', 'totalWeight', 'catchDetails']
+            required: ['species', 'speciesName', 'lsc', 'bms', 'catchType', 'units', 'totalWeight', 'catches']
         }
     };
     var data = jsf(schema);
 
     for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].catchDetails.length; j++) {
-            data[i].catchDetails[j].gears = getGears();
+        for (var j = 0; j < data[i].catches.length; j++) {
+            data[i].catches[j].gears = getGears();
         }
     }
 
@@ -272,24 +259,11 @@ function getFishingData() {
                     minimum: 100,
                     maximum: 800
                 },
-                locations: {
+                ports: {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
                 details: {
                     type: 'object',
@@ -311,7 +285,7 @@ function getFishingData() {
                     required: ['catchType', 'units', 'weightMeans']
                 }
             },
-            required: ['lsc', 'bms', 'locations', 'details', 'species', 'speciesName']
+            required: ['lsc', 'bms', 'ports', 'details', 'species', 'speciesName']
         }
     };
     var data = jsf(schema);
@@ -368,27 +342,21 @@ function getGears(){
 						type: 'string',
 						format: 'gearsRole'
 					},
-					characteristics: {
-						type: 'object',
-						properties: {
-							meshSize: {
-								type: 'string',
-								format: 'meshSize'
-							},
-							beamLength: {
-								type: 'string',
-								format: 'beamLength'
-							},
-							numBeams: {
-								type: 'integer',
-								minimum: 1,
-								maximum: 5
-							}
-						},
-						required: ['meshSize','beamLength','numBeams']
-					}
+					meshSize: {
+                        type: 'string',
+                        format: 'meshSize'
+                    },
+                    lengthWidth: {
+                        type: 'string',
+                        format: 'beamLength'
+                    },
+                    numberOfGears: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 5
+                    }
 				},
-				required: ['type','role','characteristics']
+				required: ['type','role','meshSize','lengthWidth','numberOfGears']
 			}
 		};
 		
@@ -405,39 +373,69 @@ function getFaDoc(){
 				type: 'string',
 				format: 'reportType'
 			},
-			dateAccepted: {
+			acceptedDate: {
 				type: 'string',
 				format: 'fakeDateServer'
 			},
-			flux_caractheristics: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-						chance: 'guid'
-					},
-					refId: {
-						type: 'string',
-						chance: 'guid'
-					},
-					creationDate: {
-						type: 'string',
-						format: 'fakeDateServer'
-					},
-					purposeCode: {
-						type: 'string',
-						format: 'purposeCode'
-					},
-					purpose: {
-						type: 'string',
-						chance: 'sentence'
-					}
-				},
-				required: ['id','refId','creationDate','purposeCode','purpose']
-			}
+			id: {
+                type: 'string',
+                chance: 'guid'
+            },
+            refId: {
+                type: 'string',
+                chance: 'guid'
+            },
+            creationDate: {
+                type: 'string',
+                format: 'fakeDateServer'
+            },
+            purposeCode: {
+                type: 'string',
+                format: 'purposeCode'
+            },
+            purpose: {
+                type: 'string',
+                chance: 'sentence'
+            },
+            relatedReports: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        schemeId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        },
+                    },
+                    required: ['id', 'schemeId']
+                }
+            }
 		},
-		required: ['type','dateAccepted','flux_caractheristics']
+		required: ['type','acceptedDate','id','refId','creationDate','purposeCode','purpose','relatedReports']
 	}
+}
+
+function getLocation(){
+	return {
+            type: 'object',
+            properties: {
+                name: {
+                    type: 'string',
+                    chance: 'city'
+                },
+                geometry: {
+                    type: 'string',
+                    format: 'wktPoint'
+                }
+            },
+            required: ['name', 'geometry']
+        };
 }
 
 function getFishOperFishingData(){
@@ -453,24 +451,11 @@ function getFishOperFishingData(){
         items: {
             type: 'object',
             properties: {
-                locations: {
+                ports: {
                     type: 'array',
                     minimum: 1,
                     maximum: 1,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
                 species: {
                     type: 'string',
@@ -500,7 +485,7 @@ function getFishOperFishingData(){
                     required: ['catchType', 'units', 'weightMeans']
                 }
             },
-            required: ['locations', 'species', 'speciesName', 'details']
+            required: ['ports', 'species', 'speciesName', 'details']
         }
     };
 
@@ -856,7 +841,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -877,24 +862,11 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: getFaDoc(),
-                fishingData: fishingData
+                ports: getLocation(),
+                reportDetails: getFaDoc(),
+                catches: fishingData
             },
-            required: ['summary', 'port', 'gears', 'reportDoc', 'fishingData']
+            required: ['activityDetails', 'ports', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 
@@ -909,7 +881,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -942,27 +914,14 @@ var activitySchema = function () {
                     },
                     required: ['occurence','vessel_activity','no_operations','fisheryType','targetedSpecies','fishing_time']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: getFaDoc()
+                ports: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'port', 'gears', 'reportDoc', 'fishingData']
+            required: ['activityDetails', 'ports', 'reportDetails']
         };
         var data = jsf(schema);
 
-        data.fishingData = getFishOperFishingData();
+        data.catches = getFishOperFishingData();
         data.gears = getGears();
 
         return genSchema.getSimpleSchema(data);
@@ -973,7 +932,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                arrival: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         estimatedArrival: {
@@ -987,24 +946,11 @@ var activitySchema = function () {
                     },
                     required: ['estimatedArrival', 'reason']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: getFaDoc(),
-                arrivalCatchData: arrivalData
+                ports: getLocation(),
+                reportDetails: getFaDoc(),
+                catches: arrivalData
             },
-            required: ['arrival', 'port', 'reportDoc', 'arrivalCatchData']
+            required: ['activityDetails', 'ports', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
 
@@ -1017,7 +963,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                arrival: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         arrivalTime: {
@@ -1035,23 +981,10 @@ var activitySchema = function () {
                     },
                     required: ['arrivalTime', 'reason', 'intendedLandingTime']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: getFaDoc()
+                ports: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['arrival', 'port', 'gears', 'reportDoc']
+            required: ['activityDetails', 'ports', 'reportDetails']
         };
         var data = jsf(schema);
 
@@ -1064,7 +997,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -1089,28 +1022,15 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'landingTime']
                 },
-                port: {
-                    type: 'object',
-                    properties: {
-                        name: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        geometry: {
-                            type: 'string',
-                            format: 'wktPoint'
-                        }
-                    },
-                    required: ['name', 'geometry']
-                },
-                reportDoc: getFaDoc()
+                ports: getLocation(),
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'port', 'reportDoc']
+            required: ['activityDetails', 'ports', 'reportDetails']
         };
 
         var data = jsf(schema);
 
-        data.landingCatchData = getCatchLandingData();
+        data.catches = getFishOperFishingData();
 
         return genSchema.getSimpleSchema(data);
     }
@@ -1118,7 +1038,7 @@ var activitySchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                summary: {
+                activityDetails: {
                     type: 'object',
                     properties: {
                         occurence: {
@@ -1143,28 +1063,15 @@ var activitySchema = function () {
                     },
                     required: ['occurence', 'landingTime']
                 },
-                locations: {
+                ports: {
                     type: 'array',
                     minimum: 1,
                     maximum: 5,
-                    items: {
-                        type: 'object',
-                        properties: {
-                            name: {
-                                type: 'string',
-                                chance: 'city'
-                            },
-                            geometry: {
-                                type: 'string',
-                                format: 'wktPoint'
-                            }
-                        },
-                        required: ['name', 'geometry']
-                    }
+                    items: getLocation()
                 },
-                reportDoc: getFaDoc()
+                reportDetails: getFaDoc()
             },
-            required: ['summary', 'locations', 'reportDoc']
+            required: ['activityDetails', 'ports', 'reportDetails']
         };
 
         var data = jsf(schema);
