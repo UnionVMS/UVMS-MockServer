@@ -1177,8 +1177,8 @@ jsf.format('purposeCode', function (gen, schema) {
             required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
-//		data.gears = getGears();
-//		data.processingProducts = getProcessedProducts();
+		data.gears = getGears();
+		data.processingProducts = getProcessedProducts();
 		data.tripDetails = getTripDetails();
 
         return genSchema.getSimpleSchema(data);
