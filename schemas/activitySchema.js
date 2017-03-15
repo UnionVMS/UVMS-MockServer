@@ -272,6 +272,162 @@ function getUniqueGearTypeCode(){
     return u.sample(gears, 1)[0];
 }
 
+function getTripDetails(){
+    var schema = {
+        type: 'object',
+        properties: {
+            trips: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 3,
+                items: {
+                    type: 'object',
+                    properties: {
+                        tripId: {
+                            type: 'object',
+                            properties: {
+                                id: {
+                                    type: 'string',
+                                    chance: 'guid'
+                                },
+                                schemeId: {
+                                    type: 'string',
+                                    chance: 'bb_pin'
+                                }
+                            },
+                            required: ['id', 'schemeId']
+                        },
+                        departureTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        arrivalTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        landingTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        }
+                    },
+                    required: ['tripId', 'departureTime', 'arrivalTime', 'landingTime']
+                }
+            }
+        },
+        required: ['trips']
+    };
+    
+    var data = jsf(schema);
+    data.vesselDetails = getVesselDetails('Master')
+    return data;
+}
+
+function getVesselDetails(definedRole){
+    var schema = {
+        type: 'object',
+        properties: {
+            role: definedRole,
+            name: {
+                type: 'string',
+                faker: 'name.findName'
+            },
+            country: {
+                type: 'string',
+                chance: 'country'
+            },
+            contactParties: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 1, //FIXME
+                items: {
+                    type: 'object',
+                    properties: {
+                        role: definedRole,
+                        contactPerson: {
+                            type: 'object',
+                            properties: {
+                                firstName: {
+                                    type: 'string',
+                                    chance: 'first'
+                                },
+                                lastName: {
+                                    type: 'string',
+                                    chance: 'last'
+                                },
+                                alias: {
+                                    type: 'string',
+                                    chance: 'name'
+                                },
+                                characteristics: {
+                                    type: 'object',
+                                    properties: {
+                                        key1: 'value1',
+                                        key2: 'value2'
+                                    },
+                                    required: ['key1', 'key2']
+                                }
+                            },
+                            required: ['firstName', 'lastName', 'alias', 'characteristics']
+                        }
+                    },
+                    required: ['role', 'contactPerson']
+                }
+            },
+            structuredAddress: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 1, //FIXME
+                items: {
+                    type: 'object',
+                    properties: {
+                        streetName: {
+                            type: 'string',
+                            chance: 'street'
+                        },
+                        plotId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        },
+                        postCode: {
+                            type: 'string',
+                            chance: 'postal'
+                        },
+                        cityName: {
+                            type: 'string',
+                            chance: 'city'
+                        },
+                        countryCode: {
+                            type: 'string',
+                            chance: 'country'
+                        },
+                        countryName: {
+                            type: 'string',
+                            chance: {
+                                country: {
+                                    full: true
+                                }
+                            }
+                        },
+                        characteristics: {
+                            type: 'object',
+                            properties: {
+                                key1: 'value1',
+                                key2: 'value2'
+                            },
+                            required: ['key1', 'key2']
+                        }
+                    },
+                    required: ['plotId', 'postCode', 'cityName', 'countryCode', 'countryName', 'characteristics']
+                }
+            }
+        },
+        required: ['role', 'name', 'country', 'contactParties', 'structuredAddress']
+    };
+    
+    var data = jsf(schema);
+    return data;
+}
+
 function getProcessedProducts(){
     initCatchTypes();
     initSpeciesCode();
@@ -1023,6 +1179,7 @@ jsf.format('purposeCode', function (gen, schema) {
         var data = jsf(schema);
 		data.gears = getGears();
 		data.processingProducts = getProcessedProducts();
+		data.tripDetails = getTripDetails();
 
         return genSchema.getSimpleSchema(data);
     }
