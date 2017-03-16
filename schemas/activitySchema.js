@@ -39,20 +39,20 @@ function initCatchTypes() {
     catchTypes = ['ONBOARD', 'KEPT_IN_NET', 'TAKEN_ONBOARD', 'DISCARDED', 'LOADED', 'UNLOADED'];
 }
 
-function initPresentation(){
+function initPresentation() {
     presentation = ['FIL', 'GHT', 'GUL', 'GUT', 'HEA', 'JAP', 'SAL'];
 }
 
-function initPreservation(){
+function initPreservation() {
     preservation = ['ALI', 'BOI', 'DRI', 'FRE', 'FRO', 'SAL', 'SMO'];
 }
 
-function initFreshness(){
+function initFreshness() {
     freshness = ['A', 'B', 'E', 'V', 'SO'];
 }
 
-function initPackaging(){
-    packaging = ['CRT','BOX','BGS','BLC','BUL','CNT'];
+function initPackaging() {
+    packaging = ['CRT', 'BOX', 'BGS', 'BLC', 'BUL', 'CNT'];
 }
 
 
@@ -254,20 +254,20 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getLocationAreas(){
+function getLocationAreas() {
     var areaTypes = ['territory', 'fao_area', 'ices_stat_rectangle', 'effort_zone', 'rfmo', 'gfcm_gsa', 'gfcm_stat_rectangle'];
     var chance = new Chance();
     var num = getRandomInt(1, 6);
     var sampledAreas = u.sample(areaTypes, num);
     var locations = {};
-    for (var i = 0; i < sampledAreas.length; i++){
-        locations[sampledAreas[i]] = chance.city(); 
+    for (var i = 0; i < sampledAreas.length; i++) {
+        locations[sampledAreas[i]] = chance.city();
     }
-    
+
     return locations;
 }
 
-function getUniqueGearTypeCode(){
+function getUniqueGearTypeCode() {
     initGears();
     return u.sample(gears, 1)[0];
 }
@@ -437,10 +437,10 @@ function getProcessedProducts(){
     initSpeciesCode();
     initGears();
     initPresentation();
-    initPreservation(); 
+    initPreservation();
     initFreshness();
     initPackaging();
-    
+
     var schema = {
         type: 'array',
         minItems: 1,
@@ -448,7 +448,7 @@ function getProcessedProducts(){
         items: {
             type: 'object',
             properties: {
-                type:{
+                type: {
                     type: 'string',
                     format: 'catchType'
                 },
@@ -507,8 +507,8 @@ function getProcessedProducts(){
         }
     };
     var data = jsf(schema);
-    
-    for (var i = 0; i < data.length; i++){
+
+    for (var i = 0; i < data.length; i++) {
         data[i].gear = getUniqueGearTypeCode();
         data[i].locations = getLocationAreas();
     }
@@ -794,19 +794,19 @@ function getGears(){
 		return data;
 }
 
-function getFaDoc(){
-	return {
-		type: 'object',
-		properties: {
-			type: {
-				type: 'string',
-				format: 'reportType'
-			},
-			acceptedDate: {
-				type: 'string',
-				format: 'fakeDateServer'
-			},
-			id: {
+function getFaDoc() {
+    return {
+        type: 'object',
+        properties: {
+            type: {
+                type: 'string',
+                format: 'reportType'
+            },
+            acceptedDate: {
+                type: 'string',
+                format: 'fakeDateServer'
+            },
+            id: {
                 type: 'string',
                 chance: 'guid'
             },
@@ -845,9 +845,42 @@ function getFaDoc(){
                     required: ['id', 'schemeId']
                 }
             }
-		},
-		required: ['type','acceptedDate','id','refId','creationDate','purposeCode','purpose','relatedReports']
-	}
+        },
+        required: ['type', 'acceptedDate', 'id', 'refId', 'creationDate', 'purposeCode', 'purpose', 'relatedReports']
+    }
+}
+
+function getArea() {
+    return {
+        type: 'object',
+        properties: {
+            occurence: {
+                type: 'string',
+                format: 'fakeDateServer'
+            },
+            geometry: {
+                type: 'string',
+                format: 'wktPoint'
+            }
+        },
+        required: ['occurence', 'geometry']
+    };
+}
+function getLocation() {
+    return {
+        type: 'object',
+        properties: {
+            name: {
+                type: 'string',
+                chance: 'city'
+            },
+            geometry: {
+                type: 'string',
+                format: 'wktPoint'
+            }
+        },
+        required: ['name', 'geometry']
+    };
 }
 
 function getLocation(){
@@ -986,25 +1019,25 @@ jsf.format('catchType', function (gen, schema) {
     return type[0];
 });
 
-jsf.format('presentation', function(gen, schema){
+jsf.format('presentation', function (gen, schema) {
     var idx = Math.floor(Math.random() * presentation.length);
     var pres = presentation.splice(idx, 1);
     return pres[0];
 });
 
-jsf.format('preservation', function(gen, schema){
+jsf.format('preservation', function (gen, schema) {
     var idx = Math.floor(Math.random() * preservation.length);
     var pres = preservation.splice(idx, 1);
     return pres[0];
 });
 
-jsf.format('freshness', function(gen, schema){
+jsf.format('freshness', function (gen, schema) {
     var idx = Math.floor(Math.random() * freshness.length);
     var fresh = freshness.splice(idx, 1);
     return fresh[0];
 });
 
-jsf.format('packaging', function(gen, schema){
+jsf.format('packaging', function (gen, schema) {
     var idx = Math.floor(Math.random() * packaging.length);
     var pack = packaging.splice(idx, 1);
     return pack[0];
@@ -1066,8 +1099,8 @@ jsf.format('purposeCode', function (gen, schema) {
     return types[Math.floor(Math.random() * types.length)];
 });
 
-    var activitySchema = function () {
-        this.getComChannels = function () {
+var activitySchema = function () {
+    this.getComChannels = function () {
         var data = {
             code: 'FLUX',
             description: 'FLUX'
@@ -1360,12 +1393,12 @@ jsf.format('purposeCode', function (gen, schema) {
                             type: 'string',
                             format: 'fakeDateServer'
                         },
-						vessel_activity: 'FSH - Fishing',
-						no_operations: {
-							"type": "integer",
-							  "minimum": 0,
-							  "maximum": 200,
-						},
+                        vessel_activity: 'FSH - Fishing',
+                        no_operations: {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 200,
+                        },
                         fisheryType: 'Demersal',
                         targetedSpecies: {
                             type: 'array',
@@ -1384,7 +1417,7 @@ jsf.format('purposeCode', function (gen, schema) {
                             required: ['duration']
                         }
                     },
-                    required: ['occurence','vessel_activity','no_operations','fisheryType','targetedSpecies','fishing_time']
+                    required: ['occurence', 'vessel_activity', 'no_operations', 'fisheryType', 'targetedSpecies', 'fishing_time']
                 },
                 locations: getLocation(),
                 reportDetails: getFaDoc()
@@ -1506,7 +1539,7 @@ jsf.format('purposeCode', function (gen, schema) {
 
         return genSchema.getSimpleSchema(data);
     }
-    
+
     this.jointfishingoperation = function () {
         var schema = {
             type: 'object',
@@ -1552,6 +1585,55 @@ jsf.format('purposeCode', function (gen, schema) {
 
         return genSchema.getSimpleSchema(data);
     }
+    this.getAreaEntry = function () {
+        var schema = {
+            type: 'object',
+            properties: {
+                activityDetails: {
+                    type: 'object',
+                    properties: {
+                        occurence: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        landingTime: {
+                            type: 'object',
+                            properties: {
+                                startOfLanding: {
+                                    type: 'string',
+                                    format: 'fakeDateServer'
+                                },
+                                endOfLanding: {
+                                    type: 'string',
+                                    format: 'fakeDateServer'
+                                }
+                            },
+                            required: ['startOfLanding', 'endOfLanding']
+                        }
+
+                    },
+                    required: ['occurence', 'landingTime']
+                },
+                areas: {
+                    type: 'object',
+                    properties: {
+                        transmission: getArea(),
+                        crossing: getArea(),
+                        startActivity: getArea(),
+                        startFishing: getArea()
+                    },
+                    required: ['transmission', 'crossing']
+                },
+                reportDetails: getFaDoc()
+            },
+            required: ['activityDetails', 'areas', 'reportDetails']
+        };
+
+        var data = jsf(schema);
+
+        return genSchema.getSimpleSchema(data);
+    }
+    
 };
 
 module.exports = activitySchema;

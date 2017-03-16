@@ -94,9 +94,11 @@ actRoutes.get('/fadetails/:fatype', function (req, res) {
         case 'landing':
             data = act.getLanding();
             break;
-        case 'discard':
-        case 'area_entry':
         case 'area_exit':
+        case 'area_entry':
+            data = act.getAreaEntry();
+            break;
+        case 'discard':
         case 'transhipment':
         case 'relocation':
         case 'joint_fishing_operation':
