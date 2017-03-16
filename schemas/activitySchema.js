@@ -427,10 +427,6 @@ function getClassProperties() {
     schema = {
         type: 'object',
         properties: {
-            type: {
-                type: 'string',
-                format: 'catchType'
-            },
             unit: {
                 type: 'integer',
                 minimum: 1,
@@ -441,15 +437,131 @@ function getClassProperties() {
                 minimum: 1,
                 maximum: 2000
             },
-            weight_mean: {
+            weightingMeans: {
                 type: 'string',
                 format: 'weightMeans'
+            },
+            stockId: {
+                type: 'string',
+                chance: 'bb_pin'
+            },
+            size: {
+                type: 'string',
+                chance: 'word'
+            },
+            tripId: {
+                type: 'string',
+                chance: 'guid'
+            },
+            usage: {
+                type: 'string',
+                chance: 'word'
+            },
+            destinationLocation: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'areacode'
+                        },
+                        name: {
+                            type: 'string',
+                            chance: 'city'
+                        },
+                        countryId: {
+                            type: 'string',
+                            chance: 'country'
+                        }
+                    },
+                    required: ['id', 'name', 'countryId']
+                }
+            },
+            specifiedFluxLocations: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: getLocation()
+            },
+            characteristics: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 3,
+                items: {
+                    type: 'object',
+                    properties: {
+                        typeCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        typeCodeListId: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        valueMeasure: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueMeasureUnitCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        calculatedValueMeasure: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueDateTime: {
+                            type: 'string',
+                            chance: 'timestamp'
+                        },
+                        valueIndicator: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        valueCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        valueText: {
+                            type: 'string',
+                            chance: 'sentence'
+                        },
+                        valueQuantity: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueQuantityCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        calculatedValueQuantity: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        description: {
+                            type: 'string',
+                            chance: 'sentence'
+                        }
+                    },
+                    required: ['typeCode', 'typeCodeListId', 'valueMeasure', 'valueMeasureUnitCode', 'calculatedValueMeasure', 'valueDateTime','valueIndicator',
+                            'valueCode', 'valueText', 'valueQuantity', 'valueQuantityCode', 'calculatedValueQuantity', 'description']
+                }
             }
         },
-        required: ['type', 'unit', 'weight', 'weight_mean']
+        required: ['unit', 'weight', 'weightingMeans', 'stockId', 'size', 'tripId', 'usage', 'destinationLocation', 'specifiedFluxLocations']
     };
 
     var data = jsf(schema);
+
+    data.gears = getGears();
+
     return data;
 }
 
@@ -482,9 +594,38 @@ function getGears(){
                         type: 'integer',
                         minimum: 1,
                         maximum: 5
+                    },
+                    height: {
+                        type: 'integer',
+                        minimum: 50,
+                        maximum: 300
+                    },
+                    nrOfLines: {
+                        type: 'integer',
+                        minimum: 50,
+                        maximum: 300
+                    },
+                    nrOfNets: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 10
+                    },
+                    nominalLengthOfNet: {
+                        type: 'integer',
+                        minimum: 100,
+                        maximum: 1000
+                    },
+                    quantity: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 100
+                    },
+                    description: {
+                        type: 'string',
+                        chance: 'sentence'
                     }
 				},
-				required: ['type','role','meshSize','lengthWidth','numberOfGears']
+				required: ['type','role','meshSize','lengthWidth','numberOfGears','height','nrOfLines','nrOfNets','nominalLengthOfNet','quantity','description']
 			}
 		};
 		
@@ -567,64 +708,42 @@ function getLocation(){
 }
 
 function getFishOperFishingData(){
+    initCatchTypes();
     initSpeciesCode();
     initSpecies();
-    initWeights();
-    initCatchTypes();
+    initGears();
 
     var schema = {
         type: 'array',
-        minItems: 2,
+        minItems: 1,
         maxItems: 5,
         items: {
             type: 'object',
             properties: {
-                locations: {
-                    type: 'array',
-                    minimum: 1,
-                    maximum: 1,
-                    items: getLocation()
+                type:{
+                    type: 'string',
+                    format: 'catchType'
                 },
                 species: {
                     type: 'string',
                     format: 'fishSpeciesCode'
                 },
-                speciesName: {
-                    type: 'string',
-                    format: 'fishSpecies'
-                },
-                details: {
-                    type: 'object',
-                    properties: {
-                        catchType: {
-                            type: 'string',
-                            format: 'catchType'
-                        },
-                        units: {
-                            type: 'integer',
-                            minimum: 10,
-                            maximum: 500
-                        },
-                        weightMeans: {
-                            type: 'string',
-                            format: 'weightMeans'
-                        }
-                    },
-                    required: ['catchType', 'units', 'weightMeans']
+                calculatedWeight: {
+                    type: 'integer',
+                    minimum: 25,
+                    maximum: 3500
                 }
             },
-            required: ['locations', 'species', 'speciesName', 'details']
+            required: ['type', 'species', 'calculatedWeight']
         }
     };
 
     var data = jsf(schema);
 
     for (var i = 0; i < data.length; i++) {
-        data[i].gears = getGears();
         data[i].lsc = getClassProperties();
         data[i].bms = getClassProperties();
-        data[i].dis = getClassProperties();
-        data[i].dim = getClassProperties();
+        data[i].locations = getLocationAreas();
     }
 
     return data;
