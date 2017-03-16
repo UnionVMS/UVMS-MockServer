@@ -322,6 +322,56 @@ function getTripDetails(){
     return data;
 }
 
+function getStructuredAddress(){
+    return {
+        type: 'array',
+        minItems: 1,
+        maxItems: 3, //FIXME
+        items: {
+            type: 'object',
+            properties: {
+                streetName: {
+                    type: 'string',
+                    chance: 'street'
+                },
+                plotId: {
+                    type: 'string',
+                    chance: 'bb_pin'
+                },
+                postCode: {
+                    type: 'string',
+                    chance: 'postal'
+                },
+                cityName: {
+                    type: 'string',
+                    chance: 'city'
+                },
+                countryCode: {
+                    type: 'string',
+                    chance: 'country'
+                },
+                countryName: {
+                    type: 'string',
+                    chance: {
+                        country: {
+                            full: true
+                        }
+                    }
+                },
+                characteristics: {
+                    type: 'object',
+                    properties: {
+                        key1: 'value1',
+                        key2: 'value2'
+                    },
+                    required: ['key1', 'key2']
+                }
+            },
+            required: ['streetName', 'plotId', 'postCode', 'cityName', 'countryCode', 'countryName', 'characteristics']
+        }
+    }
+}
+
 function getVesselDetails(definedRole){
     var schema = {
         type: 'object',
@@ -368,56 +418,10 @@ function getVesselDetails(definedRole){
                                 }
                             },
                             required: ['firstName', 'lastName', 'alias', 'characteristics']
-                        }
+                        },
+                        structuredAddress: getStructuredAddress()
                     },
-                    required: ['role', 'contactPerson']
-                }
-            },
-            structuredAddress: {
-                type: 'array',
-                minItems: 1,
-                maxItems: 1, //FIXME
-                items: {
-                    type: 'object',
-                    properties: {
-                        streetName: {
-                            type: 'string',
-                            chance: 'street'
-                        },
-                        plotId: {
-                            type: 'string',
-                            chance: 'bb_pin'
-                        },
-                        postCode: {
-                            type: 'string',
-                            chance: 'postal'
-                        },
-                        cityName: {
-                            type: 'string',
-                            chance: 'city'
-                        },
-                        countryCode: {
-                            type: 'string',
-                            chance: 'country'
-                        },
-                        countryName: {
-                            type: 'string',
-                            chance: {
-                                country: {
-                                    full: true
-                                }
-                            }
-                        },
-                        characteristics: {
-                            type: 'object',
-                            properties: {
-                                key1: 'value1',
-                                key2: 'value2'
-                            },
-                            required: ['key1', 'key2']
-                        }
-                    },
-                    required: ['plotId', 'postCode', 'cityName', 'countryCode', 'countryName', 'characteristics']
+                    required: ['role', 'contactPerson', 'structuredAddress']
                 }
             }
         },
@@ -848,18 +852,42 @@ function getFaDoc(){
 
 function getLocation(){
 	return {
-            type: 'object',
-            properties: {
-                name: {
-                    type: 'string',
-                    chance: 'city'
+            type: 'array',
+            minItems: 2,
+            maxItems: 5,
+            items: {
+                type: 'object',
+                properties: {
+                    country: {
+                        type: 'string',
+                        chance: 'country'
+                    },
+                    rfmoCode: {
+                        type: 'string',
+                        faker: 'address.county'
+                    },
+                    geometry: {
+                        type: 'string',
+                        format: 'wktPoint'
+                    },
+                    identifier: {
+                        type: 'object',
+                        properties: {
+                            id: {
+                                type: 'string',
+                                chance: 'guid'
+                            },
+                            schemeId: {
+                                type: 'string',
+                                chance: 'bb_pin'
+                            }
+                        },
+                        required: ['id', 'schemeId']
+                    },
+                    structuredAddress: getStructuredAddress()
                 },
-                geometry: {
-                    type: 'string',
-                    format: 'wktPoint'
-                }
-            },
-            required: ['name', 'geometry']
+                required: ['country', 'rfmoCode', 'geometry', 'structuredAddress']
+            }
         };
 }
 
@@ -989,6 +1017,10 @@ jsf.format('gearsRole', function (gen, schema) {
 
 jsf.format('wktPoint', function (gen, schema) {
     return 'POINT(' + gen.chance.longitude() + ' ' + gen.chance.latitude() + ')';
+});
+
+jsf.format('wktMultiPoint', function (gen, schema) {
+    return 'MULTIPOINT((' + gen.chance.longitude() + ' ' + gen.chance.latitude() + '), (' + gen.chance.longitude() + ' ' + gen.chance.latitude() + '))';
 });
 
 jsf.format('meshSize', function (gen, schema) {
@@ -1285,9 +1317,21 @@ jsf.format('purposeCode', function (gen, schema) {
                                 type: 'string',
                                 format: 'fishSpeciesCode'
                             }
+                        },
+                        characteristics: {
+                            type: 'object',
+                            properties: {
+                                key1: 'value1',
+                                key2: 'value2'
+                            },
+                            required: ['key1', 'key2']
+                        },
+                        geometry: {
+                            type: 'string',
+                            format: 'wktMultiPoint'
                         }
                     },
-                    required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies']
+                    required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies', 'characteristics', 'geometry']
                 },
                 locations: getLocation(),
                 reportDetails: getFaDoc(),
