@@ -272,7 +272,167 @@ function getUniqueGearTypeCode() {
     return u.sample(gears, 1)[0];
 }
 
-function getProcessedProducts() {
+function getTripDetails(){
+    var schema = {
+        type: 'object',
+        properties: {
+            trips: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 3,
+                items: {
+                    type: 'object',
+                    properties: {
+                        tripId: {
+                            type: 'object',
+                            properties: {
+                                id: {
+                                    type: 'string',
+                                    chance: 'guid'
+                                },
+                                schemeId: {
+                                    type: 'string',
+                                    chance: 'bb_pin'
+                                }
+                            },
+                            required: ['id', 'schemeId']
+                        },
+                        departureTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        arrivalTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        },
+                        landingTime: {
+                            type: 'string',
+                            format: 'fakeDateServer'
+                        }
+                    },
+                    required: ['tripId', 'departureTime', 'arrivalTime', 'landingTime']
+                }
+            }
+        },
+        required: ['trips']
+    };
+    
+    var data = jsf(schema);
+    data.vesselDetails = getVesselDetails('Master')
+    return data;
+}
+
+function getStructuredAddress(){
+    return {
+        type: 'array',
+        minItems: 1,
+        maxItems: 3, //FIXME
+        items: {
+            type: 'object',
+            properties: {
+                streetName: {
+                    type: 'string',
+                    chance: 'street'
+                },
+                plotId: {
+                    type: 'string',
+                    chance: 'bb_pin'
+                },
+                postCode: {
+                    type: 'string',
+                    chance: 'postal'
+                },
+                cityName: {
+                    type: 'string',
+                    chance: 'city'
+                },
+                countryCode: {
+                    type: 'string',
+                    chance: 'country'
+                },
+                countryName: {
+                    type: 'string',
+                    chance: {
+                        country: {
+                            full: true
+                        }
+                    }
+                },
+                characteristics: {
+                    type: 'object',
+                    properties: {
+                        key1: 'value1',
+                        key2: 'value2'
+                    },
+                    required: ['key1', 'key2']
+                }
+            },
+            required: ['streetName', 'plotId', 'postCode', 'cityName', 'countryCode', 'countryName', 'characteristics']
+        }
+    }
+}
+
+function getVesselDetails(definedRole){
+    var schema = {
+        type: 'object',
+        properties: {
+            role: definedRole,
+            name: {
+                type: 'string',
+                faker: 'name.findName'
+            },
+            country: {
+                type: 'string',
+                chance: 'country'
+            },
+            contactParties: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 1, //FIXME
+                items: {
+                    type: 'object',
+                    properties: {
+                        role: definedRole,
+                        contactPerson: {
+                            type: 'object',
+                            properties: {
+                                firstName: {
+                                    type: 'string',
+                                    chance: 'first'
+                                },
+                                lastName: {
+                                    type: 'string',
+                                    chance: 'last'
+                                },
+                                alias: {
+                                    type: 'string',
+                                    chance: 'name'
+                                },
+                                characteristics: {
+                                    type: 'object',
+                                    properties: {
+                                        key1: 'value1',
+                                        key2: 'value2'
+                                    },
+                                    required: ['key1', 'key2']
+                                }
+                            },
+                            required: ['firstName', 'lastName', 'alias', 'characteristics']
+                        },
+                        structuredAddress: getStructuredAddress()
+                    },
+                    required: ['role', 'contactPerson', 'structuredAddress']
+                }
+            }
+        },
+        required: ['role', 'name', 'country', 'contactParties', 'structuredAddress']
+    };
+    
+    var data = jsf(schema);
+    return data;
+}
+
+function getProcessedProducts(){
     initCatchTypes();
     initSpeciesCode();
     initGears();
@@ -427,10 +587,6 @@ function getClassProperties() {
     schema = {
         type: 'object',
         properties: {
-            type: {
-                type: 'string',
-                format: 'catchType'
-            },
             unit: {
                 type: 'integer',
                 minimum: 1,
@@ -441,56 +597,201 @@ function getClassProperties() {
                 minimum: 1,
                 maximum: 2000
             },
-            weight_mean: {
+            weightingMeans: {
                 type: 'string',
                 format: 'weightMeans'
+            },
+            stockId: {
+                type: 'string',
+                chance: 'bb_pin'
+            },
+            size: {
+                type: 'string',
+                chance: 'word'
+            },
+            tripId: {
+                type: 'string',
+                chance: 'guid'
+            },
+            usage: {
+                type: 'string',
+                chance: 'word'
+            },
+            destinationLocation: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'areacode'
+                        },
+                        name: {
+                            type: 'string',
+                            chance: 'city'
+                        },
+                        countryId: {
+                            type: 'string',
+                            chance: 'country'
+                        }
+                    },
+                    required: ['id', 'name', 'countryId']
+                }
+            },
+            specifiedFluxLocations: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: getLocation()
+            },
+            characteristics: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 3,
+                items: {
+                    type: 'object',
+                    properties: {
+                        typeCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        typeCodeListId: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        valueMeasure: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueMeasureUnitCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        calculatedValueMeasure: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueDateTime: {
+                            type: 'string',
+                            chance: 'timestamp'
+                        },
+                        valueIndicator: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        valueCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        valueText: {
+                            type: 'string',
+                            chance: 'sentence'
+                        },
+                        valueQuantity: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        valueQuantityCode: {
+                            type: 'string',
+                            chance: 'word'
+                        },
+                        calculatedValueQuantity: {
+                            type: 'integer',
+                            minimum: 100,
+                            maximum: 1000
+                        },
+                        description: {
+                            type: 'string',
+                            chance: 'sentence'
+                        }
+                    },
+                    required: ['typeCode', 'typeCodeListId', 'valueMeasure', 'valueMeasureUnitCode', 'calculatedValueMeasure', 'valueDateTime','valueIndicator',
+                            'valueCode', 'valueText', 'valueQuantity', 'valueQuantityCode', 'calculatedValueQuantity', 'description']
+                }
             }
         },
-        required: ['type', 'unit', 'weight', 'weight_mean']
+        required: ['unit', 'weight', 'weightingMeans', 'stockId', 'size', 'tripId', 'usage', 'destinationLocation', 'specifiedFluxLocations']
     };
 
     var data = jsf(schema);
+
+    data.gears = getGears();
+
     return data;
 }
 
-function getGears() {
-    initGears();
-    var schema = {
-        type: 'array',
-        minItems: 1,
-        maxItems: 4,
-        items: {
-            type: 'object',
-            properties: {
-                type: {
-                    type: 'string',
-                    format: 'gearsCode'
-                },
-                role: {
-                    type: 'string',
-                    format: 'gearsRole'
-                },
-                meshSize: {
-                    type: 'string',
-                    format: 'meshSize'
-                },
-                lengthWidth: {
-                    type: 'string',
-                    format: 'beamLength'
-                },
-                numberOfGears: {
-                    type: 'integer',
-                    minimum: 1,
-                    maximum: 5
-                }
-            },
-            required: ['type', 'role', 'meshSize', 'lengthWidth', 'numberOfGears']
-        }
-    };
-
-    var data = jsf(schema);
-
-    return data;
+function getGears(){
+	initGears();
+	var schema = {
+			type: 'array',
+			minItems: 1,
+			maxItems: 4,
+			items: {
+				type: 'object',
+				properties: {
+					type: {
+						type: 'string',
+						format: 'gearsCode'
+					},
+					role: {
+						type: 'string',
+						format: 'gearsRole'
+					},
+					meshSize: {
+                        type: 'string',
+                        format: 'meshSize'
+                    },
+                    lengthWidth: {
+                        type: 'string',
+                        format: 'beamLength'
+                    },
+                    numberOfGears: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 5
+                    },
+                    height: {
+                        type: 'integer',
+                        minimum: 50,
+                        maximum: 300
+                    },
+                    nrOfLines: {
+                        type: 'integer',
+                        minimum: 50,
+                        maximum: 300
+                    },
+                    nrOfNets: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 10
+                    },
+                    nominalLengthOfNet: {
+                        type: 'integer',
+                        minimum: 100,
+                        maximum: 1000
+                    },
+                    quantity: {
+                        type: 'integer',
+                        minimum: 1,
+                        maximum: 100
+                    },
+                    description: {
+                        type: 'string',
+                        chance: 'sentence'
+                    }
+				},
+				required: ['type','role','meshSize','lengthWidth','numberOfGears','height','nrOfLines','nrOfNets','nominalLengthOfNet','quantity','description']
+			}
+		};
+		
+		var data = jsf(schema);
+		
+		return data;
 }
 
 function getFaDoc() {
@@ -582,65 +883,84 @@ function getLocation() {
     };
 }
 
-function getFishOperFishingData() {
+function getLocation(){
+	return {
+            type: 'array',
+            minItems: 2,
+            maxItems: 5,
+            items: {
+                type: 'object',
+                properties: {
+                    country: {
+                        type: 'string',
+                        chance: 'country'
+                    },
+                    rfmoCode: {
+                        type: 'string',
+                        faker: 'address.county'
+                    },
+                    geometry: {
+                        type: 'string',
+                        format: 'wktPoint'
+                    },
+                    identifier: {
+                        type: 'object',
+                        properties: {
+                            id: {
+                                type: 'string',
+                                chance: 'guid'
+                            },
+                            schemeId: {
+                                type: 'string',
+                                chance: 'bb_pin'
+                            }
+                        },
+                        required: ['id', 'schemeId']
+                    },
+                    structuredAddress: getStructuredAddress()
+                },
+                required: ['country', 'rfmoCode', 'geometry', 'structuredAddress']
+            }
+        };
+}
+
+function getFishOperFishingData(){
+    initCatchTypes();
     initSpeciesCode();
     initSpecies();
-    initWeights();
-    initCatchTypes();
+    initGears();
 
     var schema = {
         type: 'array',
-        minItems: 2,
+        minItems: 1,
         maxItems: 5,
         items: {
             type: 'object',
             properties: {
-                locations: {
-                    type: 'array',
-                    minimum: 1,
-                    maximum: 1,
-                    items: getLocation()
+                type:{
+                    type: 'string',
+                    format: 'catchType'
                 },
                 species: {
                     type: 'string',
                     format: 'fishSpeciesCode'
                 },
-                speciesName: {
-                    type: 'string',
-                    format: 'fishSpecies'
-                },
-                details: {
-                    type: 'object',
-                    properties: {
-                        catchType: {
-                            type: 'string',
-                            format: 'catchType'
-                        },
-                        units: {
-                            type: 'integer',
-                            minimum: 10,
-                            maximum: 500
-                        },
-                        weightMeans: {
-                            type: 'string',
-                            format: 'weightMeans'
-                        }
-                    },
-                    required: ['catchType', 'units', 'weightMeans']
+                calculatedWeight: {
+                    type: 'integer',
+                    minimum: 25,
+                    maximum: 3500
                 }
             },
-            required: ['locations', 'species', 'speciesName', 'details']
+            required: ['type', 'species', 'calculatedWeight']
         }
     };
 
     var data = jsf(schema);
 
     for (var i = 0; i < data.length; i++) {
-        data[i].gears = getGears();
         data[i].lsc = getClassProperties();
         data[i].bms = getClassProperties();
-        data[i].dis = getClassProperties();
-        data[i].dim = getClassProperties();
+        data[i].locations = getLocationAreas();
     }
 
     return data;
@@ -730,6 +1050,10 @@ jsf.format('gearsRole', function (gen, schema) {
 
 jsf.format('wktPoint', function (gen, schema) {
     return 'POINT(' + gen.chance.longitude() + ' ' + gen.chance.latitude() + ')';
+});
+
+jsf.format('wktMultiPoint', function (gen, schema) {
+    return 'MULTIPOINT((' + gen.chance.longitude() + ' ' + gen.chance.latitude() + '), (' + gen.chance.longitude() + ' ' + gen.chance.latitude() + '))';
 });
 
 jsf.format('meshSize', function (gen, schema) {
@@ -1026,9 +1350,21 @@ var activitySchema = function () {
                                 type: 'string',
                                 format: 'fishSpeciesCode'
                             }
+                        },
+                        characteristics: {
+                            type: 'object',
+                            properties: {
+                                key1: 'value1',
+                                key2: 'value2'
+                            },
+                            required: ['key1', 'key2']
+                        },
+                        geometry: {
+                            type: 'string',
+                            format: 'wktMultiPoint'
                         }
                     },
-                    required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies']
+                    required: ['occurence', 'reason', 'fisheryType', 'targetedSpecies', 'characteristics', 'geometry']
                 },
                 locations: getLocation(),
                 reportDetails: getFaDoc(),
@@ -1037,8 +1373,9 @@ var activitySchema = function () {
             required: ['activityDetails', 'locations', 'reportDetails', 'catches']
         };
         var data = jsf(schema);
-        data.gears = getGears();
-        data.processingProducts = getProcessedProducts();
+		data.gears = getGears();
+		data.processingProducts = getProcessedProducts();
+		data.tripDetails = getTripDetails();
 
         return genSchema.getSimpleSchema(data);
     }
