@@ -385,10 +385,58 @@ function getVesselDetails(definedRole){
                 type: 'string',
                 chance: 'country'
             },
+            storage: {
+                type: 'object',
+                properties: {
+                    type: {
+                        type: 'string',
+                        chance: 'word'
+                    },
+                    identifiers: {
+                        type: 'array',
+                        minItems: 1,
+                        maxItems: 5,
+                        items: {
+                            type: 'object',
+                            properties: {
+                                id: {
+                                    type: 'string',
+                                    chance: 'guid'
+                                },
+                                schemeId: {
+                                    type: 'string',
+                                    chance: 'bb_pin'
+                                },
+                            },
+                            required: ['id', 'schemeId']
+                        }
+                    }
+                },
+                required: ['type', 'identifiers']
+            },
+            authorizations: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        schemeId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        },
+                    },
+                    required: ['id', 'schemeId']
+                }
+            },
             contactParties: {
                 type: 'array',
                 minItems: 1,
-                maxItems: 1, //FIXME
+                maxItems: 3, //FIXME
                 items: {
                     type: 'object',
                     properties: {
@@ -425,10 +473,38 @@ function getVesselDetails(definedRole){
                 }
             }
         },
-        required: ['role', 'name', 'country', 'contactParties', 'structuredAddress']
+        required: ['role', 'name', 'country', 'storage', 'authorizations', 'contactParties']
     };
     
     var data = jsf(schema);
+
+    data.vesselIds = [
+        {
+            id: 'EXT_MARK_desc',
+            schemeId: 'EXT_MARK'
+        },
+        {
+            id: 'IRCS_desc',
+            schemeId: 'IRCS'
+        },
+        {
+            id: 'CFR_desc',
+            schemeId: 'CFR'
+        },
+        {
+            id: 'UVI_desc',
+            schemeId: 'UVI'
+        },
+        {
+            id: 'ICCAT_desc',
+            schemeId: 'ICCAT'
+        },
+        {
+            id: 'GFCM_desc',
+            schemeId: 'GFCM'
+        }
+    ];
+
     return data;
 }
 
