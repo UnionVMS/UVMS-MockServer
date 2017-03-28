@@ -56,6 +56,9 @@ mdrRoutes.post('/cl/:acronym', function (req, res) {
         case 'fish_packaging':
             data = mdr.getFishPackaging();
             break;
+        case 'vessel_role':
+            data = mdr.getVesselRole();
+            break;
         default:
             break;
     }

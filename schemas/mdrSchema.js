@@ -312,6 +312,24 @@ var mdrSchema = function(){
         
         return genSchema.getPaginationSchema(codeList);
     };
+
+    this.getVesselRole = function(){
+        var codeList = [{
+            code: 'CATCHING_VESSEL', description: 'The catching vessel'
+        },{
+            code: 'PARTICIPATING_VESSEL', description: 'The participating vessel'
+        },{
+            code: 'PAIR_FISHING_PARTNER', description: 'The pair fishing partner'
+        },{
+            code: 'AUXILIARY', description: 'An auxiliary vessel that helped with the operation without taking catches on board or being allocated catches'
+        },{
+            code: 'DONOR', description: 'The donor vessel off-loading catches in transhipment and relocation operations'
+        },{
+            code: 'RECEIVER', description: 'The receiver vessel on-loading catches in transhipment and relocation operations'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    };
 };
 
 module.exports = mdrSchema;
