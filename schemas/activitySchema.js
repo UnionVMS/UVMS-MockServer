@@ -55,7 +55,6 @@ function initPackaging() {
     packaging = ['CRT', 'BOX', 'BGS', 'BLC', 'BUL', 'CNT'];
 }
 
-
 function getFishData(start, end, includeDiff) {
     var fishSpecies = ['cod', 'sol', 'lem', 'tur'];
     var speciesToUse = fishSpecies.slice(start, end);
@@ -385,6 +384,54 @@ function getVesselDetails(definedRole){
                 type: 'string',
                 chance: 'country'
             },
+            storage: {
+                type: 'object',
+                properties: {
+                    type: {
+                        type: 'string',
+                        chance: 'word'
+                    },
+                    identifiers: {
+                        type: 'array',
+                        minItems: 1,
+                        maxItems: 5,
+                        items: {
+                            type: 'object',
+                            properties: {
+                                id: {
+                                    type: 'string',
+                                    chance: 'guid'
+                                },
+                                schemeId: {
+                                    type: 'string',
+                                    chance: 'bb_pin'
+                                },
+                            },
+                            required: ['id', 'schemeId']
+                        }
+                    }
+                },
+                required: ['type', 'identifiers']
+            },
+            authorizations: {
+                type: 'array',
+                minItems: 1,
+                maxItems: 5,
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        schemeId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        },
+                    },
+                    required: ['id', 'schemeId']
+                }
+            },
             contactParties: {
                 type: 'array',
                 minItems: 1,
@@ -425,10 +472,38 @@ function getVesselDetails(definedRole){
                 }
             }
         },
-        required: ['role', 'name', 'country', 'contactParties']
+        required: ['role', 'name', 'country', 'storage', 'authorizations', 'contactParties']
     };
     
     var data = jsf(schema);
+
+    data.vesselIds = [
+        {
+            id: 'EXT_MARK_desc',
+            schemeId: 'EXT_MARK'
+        },
+        {
+            id: 'IRCS_desc',
+            schemeId: 'IRCS'
+        },
+        {
+            id: 'CFR_desc',
+            schemeId: 'CFR'
+        },
+        {
+            id: 'UVI_desc',
+            schemeId: 'UVI'
+        },
+        {
+            id: 'ICCAT_desc',
+            schemeId: 'ICCAT'
+        },
+        {
+            id: 'GFCM_desc',
+            schemeId: 'GFCM'
+        }
+    ];
+
     return data;
 }
 
@@ -1190,6 +1265,17 @@ jsf.format('gearRecovery', function (gen, schema) {
     return rec[Math.floor(Math.random() * rec.length)];
 });
 
+jsf.format('vesselIds', function (gen, schema) {
+    var vesselIds = ['CFR', 'ICCAT'];
+    return vesselIds[Math.floor(Math.random() * vesselIds.length)];
+});
+
+jsf.format('vesselRoles', function (gen, schema) {
+    var vesselRoles = ['CATCHING_VESSEL', 'PARTICIPATING_VESSEL', 'PAIR_FISHING_PARTNER', 'AUXILIARY', 'DONOR', 'RECEIVER'];
+    return vesselRoles[Math.floor(Math.random() * vesselRoles.length)];
+});
+
+
 var activitySchema = function () {
     this.getComChannels = function () {
         var data = {
@@ -1632,6 +1718,9 @@ var activitySchema = function () {
     }
 
     this.jointfishingoperation = function () {
+        initSpeciesCode();
+        initCatchTypes();
+
         var schema = {
             type: 'object',
             properties: {
@@ -1666,13 +1755,99 @@ var activitySchema = function () {
                     maximum: 5,
                     items: getLocation()
                 },
-                reportDetails: getFaDoc()
+                reportDetails: getFaDoc(),
+                relocation: {
+                    type: 'array',
+                    minItems: 1,
+                    maxItems: 5,
+                    items: {
+                        type: 'object',
+                        properties: {
+                            role: {
+                                type: 'string',
+                                format: 'vesselRoles'
+                            },
+                            country: {
+                                type: 'string',
+                                chance: 'country'
+                            },
+                            vesselIdentifiers: {
+                                type: 'array',
+                                minItems: 1,
+                                maxItems: 1,
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        id: {
+                                            type: 'string',
+                                            chance: 'guid'
+                                        },
+                                        schemeId: {
+                                            type: 'string',
+                                            format: 'vesselIds'
+                                        }
+                                    },
+                                    required: ['id', 'schemeId']
+                                }
+                            },
+                            name: {
+                                type: 'string',
+                                chance: 'word'
+                            },
+                            speciesCode: {
+                                type: 'string',
+                                format: 'fishSpeciesCode'
+                            },
+                            type: {
+                                type: 'string',
+                                format: 'catchType'
+                            },
+                            weight: {
+                                type: 'integer',
+                                minimum: 1,
+                                maximum: 3000
+                            },
+                            unit: {
+                                type: 'integer',
+                                minimum: 10,
+                                maximum: 500
+                            },
+                            characteristics: {
+                                type: 'array',
+                                minItems: 1,
+                                maxItems: 1,
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        key1: {
+                                            type: 'string',
+                                            chance: 'word'
+                                        },
+                                        key2: {
+                                            type: 'string',
+                                            chance: 'word'
+                                        }
+                                    },
+                                    required: ['key1', 'key2']
+                                }
+                            }
+                        },
+                        required: ['role', 'country', 'vesselIdentifiers', 'name', 'speciesCode', 'type', 'weight', 'unit', 'characteristics']
+                    }
+                }
             },
-            required: ['activityDetails', 'locations', 'reportDetails']
+            required: ['activityDetails', 'locations', 'reportDetails', 'relocation']
         };
 
         var data = jsf(schema);
         data.gears = getGears();
+
+        for(var i=0;i<data.relocation.length;i++){
+            data.relocation[i].vesselIdentifiers.push({
+                id: 'IRCS_desc',
+                schemeId: 'IRCS'
+            })
+        }
 
         return genSchema.getSimpleSchema(data);
     }

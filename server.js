@@ -62,6 +62,9 @@ mdrRoutes.post('/cl/:acronym', function (req, res) {
         case 'fa_gear_recovery':
             data = mdr.getGearRecovery();
             break;
+        case 'vessel_role':
+            data = mdr.getVesselRole();
+            break;
         default:
             break;
     }
