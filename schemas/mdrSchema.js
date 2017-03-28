@@ -312,6 +312,44 @@ var mdrSchema = function(){
         
         return genSchema.getPaginationSchema(codeList);
     };
+    
+    this.getGearProblems = function(){
+        var codeList = [{
+            code: 'GEAR_LOSS', description: 'Gear loss'
+        },{
+            code: 'EMPTY_SET', description: 'Empty set'
+        },{
+            code: 'NET_BURST', description: 'Net burst'
+        },{
+            code: 'SPLIT', description: 'Split'
+        },{
+            code: 'BROKEN_MESH', description: 'Broken meshes in the cod end (tear in cod end)'
+        },{
+            code: 'FOUND', description: 'Found gear'
+        },{
+            code: 'OTHER', description: 'Any other not further specified problem'
+        }];
+           
+        return genSchema.getPaginationSchema(codeList);
+    };
+    
+    this.getGearRecovery = function(){
+        var codeList = [{
+            code: 'DREG_SWEEP', description: 'Sweep up lost gear using dregs'
+        },{
+            code: 'TRAWL_SWEEP', description: 'Sweep up lost gear using trawls'
+        },{
+            code: 'OCULAR', description: 'Locating lost gear using visual methods'
+        },{
+            code: 'SONAR', description: 'Locating lost gear using sonar'
+        },{
+            code: 'POSITION_REPORT', description: 'Reported exact position to the relevant authorities'
+        },{
+            code: 'OTHER', description: 'Any other measure to recover lost gear'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    }
 
     this.getVesselRole = function(){
         var codeList = [{
