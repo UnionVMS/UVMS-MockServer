@@ -326,7 +326,7 @@ function getStructuredAddress(){
     return {
         type: 'array',
         minItems: 1,
-        maxItems: 3, //FIXME
+        maxItems: 3,
         items: {
             type: 'object',
             properties: {
@@ -388,7 +388,7 @@ function getVesselDetails(definedRole){
             contactParties: {
                 type: 'array',
                 minItems: 1,
-                maxItems: 1, //FIXME
+                maxItems: 5,
                 items: {
                     type: 'object',
                     properties: {
@@ -425,7 +425,7 @@ function getVesselDetails(definedRole){
                 }
             }
         },
-        required: ['role', 'name', 'country', 'contactParties', 'structuredAddress']
+        required: ['role', 'name', 'country', 'contactParties']
     };
     
     var data = jsf(schema);
@@ -513,6 +513,98 @@ function getProcessedProducts(){
         data[i].locations = getLocationAreas();
     }
 
+    return data;
+}
+
+function getGearShotRetrieval(){
+    var schema = {
+        type: 'array',
+        minItems: 5,
+        maxItems: 10,
+        items: {
+            type: 'object',
+            properties: {
+                type: {
+                    type: 'string',
+                    format: 'gearShotRetrieval'
+                },
+                occurrence: {
+                    type: 'string',
+                    format: 'fakeDateServer'
+                },
+                id: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        schemeId: {
+                            type: 'string',
+                            chance: 'bb_pin'
+                        }
+                    },
+                    required: ['id', 'schemeId']
+                },
+                duration: {
+                    type: 'integer',
+                    minimum: 1000,
+                    maximum: 200000 
+                },
+                characteristics: {
+                    type: 'object',
+                    properties: {
+                        key1: 'value1',
+                        key2: 'value2'
+                    },
+                    required: ['key1', 'key2']
+                }
+            },
+            required: ['type', 'occurrence', 'id', 'duration', 'characteristics']
+        }
+    };
+    
+    var data = jsf(schema);
+    for(var i = 0; i < data.length; i++){
+        var gears = getGears();
+        var locations = jsf(getLocation());
+        
+        data[i].gear = gears[0]; 
+        data[i].location = locations[0];
+        data[i].gearProblems = getGearProblems();
+    }
+    
+    return data;
+}
+
+function getGearProblems(){
+    var schema = {
+        type: 'array',
+        minItems: 1,
+        maxItems: 5,
+        items: {
+            type: 'object',
+            properties: {
+                type: {
+                    type: 'string',
+                    format: 'gearProblem'
+                },
+                nrOfGears: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 4
+                },
+                recoveryMeasure: {
+                    type: 'string',
+                    format: 'gearRecovery'
+                },
+                locations: getLocation()
+            },
+            required: ['type', 'nrOfGears', 'recoveryMeasure', 'locations']
+        }
+    };
+    
+    var data = jsf(schema);
     return data;
 }
 
@@ -866,22 +958,6 @@ function getArea() {
         required: ['occurence', 'geometry']
     };
 }
-function getLocation() {
-    return {
-        type: 'object',
-        properties: {
-            name: {
-                type: 'string',
-                chance: 'city'
-            },
-            geometry: {
-                type: 'string',
-                format: 'wktPoint'
-            }
-        },
-        required: ['name', 'geometry']
-    };
-}
 
 function getLocation(){
 	return {
@@ -1097,6 +1173,21 @@ jsf.format('reason', function (gen, schema) {
 jsf.format('purposeCode', function (gen, schema) {
     var types = [1, 3, 5, 9];
     return types[Math.floor(Math.random() * types.length)];
+});
+
+jsf.format('gearShotRetrieval', function (gen, schema) {
+    var activity = ['GEAR_SHOT', 'GEAR_RETRIEVAL'];
+    return activity[Math.floor(Math.random() * activity.length)];
+});
+
+jsf.format('gearProblem', function (gen, schema) {
+    var problem = ['GEAR_LOSS', 'EMPTY_SET', 'NET_BURST', 'SPLIT', 'BROKEN_MESH', 'FOUND', 'OTHER'];
+    return problem[Math.floor(Math.random() * problem.length)];
+});
+
+jsf.format('gearRecovery', function (gen, schema) {
+    var rec = ['DREG_SWEEP', 'TRAWL_SWEEP', 'OCULAR', 'SONAR', 'POSITION_REPORT', 'OTHER'];
+    return rec[Math.floor(Math.random() * rec.length)];
 });
 
 var activitySchema = function () {
@@ -1375,7 +1466,7 @@ var activitySchema = function () {
         var data = jsf(schema);
 		data.gears = getGears();
 		data.processingProducts = getProcessedProducts();
-		data.tripDetails = getTripDetails();
+		data.tripDetails = getTripDetails();		
 
         return genSchema.getSimpleSchema(data);
     }
