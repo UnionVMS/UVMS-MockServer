@@ -26,11 +26,11 @@ app.use(bodyParser.json());
 
 //MDR ROUTES
 var mdrRoutes = express.Router();
-mdrRoutes.post('/cl/:acronym', function(req, res){
+mdrRoutes.post('/cl/:acronym', function (req, res) {
     var data;
     switch (req.params.acronym) {
         case 'flux_gp_purposecode':
-            data = mdr.getPurposeCodes(); 
+            data = mdr.getPurposeCodes();
             break;
         case 'flux_fa_report_type':
             data = mdr.getReportTypes();
@@ -47,6 +47,24 @@ mdrRoutes.post('/cl/:acronym', function(req, res){
         case 'fa_catch_type':
             data = mdr.getCatchTypes();
             break;
+        case 'fish_presentation':
+            data = mdr.getPresentationCodes();
+            break;
+        case 'fish_preservation':
+            data = mdr.getPreservationCodes();
+            break;
+        case 'fish_packaging':
+            data = mdr.getFishPackaging();
+            break;
+        case 'fa_gear_problem':
+            data = mdr.getGearProblems();
+            break;
+        case 'fa_gear_recovery':
+            data = mdr.getGearRecovery();
+            break;
+        case 'vessel_role':
+            data = mdr.getVesselRole();
+            break;
         default:
             break;
     }
@@ -55,25 +73,46 @@ mdrRoutes.post('/cl/:acronym', function(req, res){
 
 //ACTIVITY ROUTES
 var actRoutes = express.Router();
-actRoutes.get('/comchannels', function(req, res){
+actRoutes.get('/comchannels', function (req, res) {
     res.json(act.getComChannels());
 });
-actRoutes.get('/catchdetails/:id', function(req, res){
+actRoutes.get('/catchdetails/:id', function (req, res) {
     res.json(act.getTripCatchDetail());
 });
-actRoutes.get('/triplandingdetails/:id', function(req,res){
+actRoutes.get('/triplandingdetails/:id', function (req, res) {
     res.json(act.getTripCatchesLandingDetails());
 });
-actRoutes.get('/tripcatchevolution/:id', function(req,res){
+actRoutes.get('/tripcatchevolution/:id', function (req, res) {
     res.json(act.getTripCatchesEvolution());
 });
-actRoutes.get('/fadetails/:fatype', function(req,res){
+actRoutes.get('/fadetails/:fatype', function (req, res) {
     var data;
     switch (req.params.fatype) {
         case 'departure':
             data = act.getDeparture();
             break;
-    
+        case 'fishing_operation':
+            data = act.getFishingOperation();
+            break;
+        case 'arrival_notification':
+            data = act.getArrivalNotification();
+            break;
+        case 'arrival_declaration':
+            data = act.getArrival();
+            break;
+        case 'landing':
+            data = act.getLanding();
+            break;
+        case 'area_exit':
+        case 'area_entry':
+            data = act.getAreaEntry();
+            break;
+        case 'discard':
+        case 'transhipment':
+        case 'relocation':
+        case 'joint_fishing_operation':
+            data = act.jointfishingoperation();
+            break;
         default:
             break;
     }

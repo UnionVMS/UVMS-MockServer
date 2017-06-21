@@ -196,6 +196,178 @@ var mdrSchema = function(){
         
         return genSchema.getPaginationSchema(codeList);
     };
+    
+    this.getPresentationCodes = function(){
+        var codeList = [{
+            code: 'CBF', description: 'HEA with skin on, spine on, tail on'
+        }, {
+            code: 'CLA', description: 'Claws only'
+        }, {
+            code: 'DWT', description: 'Gilled, gutted, part of head off, fins off'
+        }, {
+            code: 'FIL', description: 'HEA+GUT+TLD+bones offEach fish originates two fillets not joined by any par'
+        }, {
+            code: 'FIS', description: 'FIL+SKI  Each fish originates two fillets not joined by any par'
+        }, {
+            code: 'FSB', description: 'Filleted with skin and bones on'
+        }, {
+            code: 'FSP', description: 'Filleted with skin removed and pinbone on'
+        }, {
+            code: 'GHT', description: 'GUH+TLD'
+        }, {
+            code: 'GUG', description: 'Guts and gills removed'
+        }, {
+            code: 'GUH', description: 'Guts and head removed'
+        }, {
+            code: 'GUL', description: 'GUT without removing liver parts'
+        }, {
+            code: 'GUS', description: 'GUH+SKI'
+        }, {
+            code: 'GUT', description: 'All guts removed'
+        }, {
+            code: 'HEA', description: 'Heads off'
+        }, {
+            code: 'JAP', description: 'Transversal cut removing all parts from head to belly'
+        }, {
+            code: 'JAT', description: 'Japanese cut with tail removed'
+        }, {
+            code: 'LAP', description: 'Double fillet, HEA, skin+tails+fins ON'
+        }, {
+            code: 'LVR', description: 'Liver '
+        }, {
+            code: 'LVR-C', description: 'Liver - collective presentation'
+        }, {
+            code: 'OTH', description: 'Any other presentation'
+        }, {
+            code: 'ROE', description: 'Roe(s)'
+        }, {
+            code: 'ROE-C', description: 'Roe(s) - Collective presentation'
+        }, {
+            code: 'SAD', description: 'Headed with skin on, spine on, tail on and salted dry'
+        }, {
+            code: 'SAL', description: 'CBF+salted'
+        }, {
+            code: 'SGH', description: 'GUH+salted'
+        }, {
+            code: 'SGT', description: 'GUT+salted'
+        }, {
+            code: 'SKI', description: 'Skin off'
+        }, {
+            code: 'SUR', description: 'Surimi'
+        }, {
+            code: 'TAL', description: 'Tails only'
+        }, {
+            code: 'TLD', description: 'Tail off'
+        }, {
+            code: 'TNG', description: 'Tongue'
+        }, {
+            code: 'TNG-C', description: 'Tongue - collective presentation'
+        }, {
+            code: 'TUB', description: 'Tube only (Squid)'
+        }, {
+            code: 'WHL', description: 'No processing'
+        }, {
+            code: 'WNG', description: 'Wings only'
+        }, {
+            code: 'BMS', description: 'All fish smaller than the minimum conservation reference size'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    };
+    
+    this.getPreservationCodes = function(){
+        var codeList = [{
+            code: 'ALI', description: 'Alive'
+        },{
+            code: 'BOI', description: 'Boiled'
+        },{
+            code: 'DRI', description: 'Dried'
+        },{
+            code: 'FRE', description: 'Fresh'
+        },{
+            code: 'FRO', description: 'Frozen'
+        },{
+            code: 'SAL', description: 'Salted'
+        },{
+            code: 'SMO', description: 'Smoked'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    };
+    
+    this.getFishPackaging = function(){
+        var codeList = [{
+            code: 'CRT', description: 'cartons'
+        },{
+            code: 'BOX', description: 'boxes'
+        },{
+            code: 'BGS', description: 'bags'
+        },{
+            code: 'BLC', description: 'blocks'
+        },{
+            code: 'BUL', description: 'bulkk fish'
+        },{
+            code: 'CNT', description: 'containers'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    };
+    
+    this.getGearProblems = function(){
+        var codeList = [{
+            code: 'GEAR_LOSS', description: 'Gear loss'
+        },{
+            code: 'EMPTY_SET', description: 'Empty set'
+        },{
+            code: 'NET_BURST', description: 'Net burst'
+        },{
+            code: 'SPLIT', description: 'Split'
+        },{
+            code: 'BROKEN_MESH', description: 'Broken meshes in the cod end (tear in cod end)'
+        },{
+            code: 'FOUND', description: 'Found gear'
+        },{
+            code: 'OTHER', description: 'Any other not further specified problem'
+        }];
+           
+        return genSchema.getPaginationSchema(codeList);
+    };
+    
+    this.getGearRecovery = function(){
+        var codeList = [{
+            code: 'DREG_SWEEP', description: 'Sweep up lost gear using dregs'
+        },{
+            code: 'TRAWL_SWEEP', description: 'Sweep up lost gear using trawls'
+        },{
+            code: 'OCULAR', description: 'Locating lost gear using visual methods'
+        },{
+            code: 'SONAR', description: 'Locating lost gear using sonar'
+        },{
+            code: 'POSITION_REPORT', description: 'Reported exact position to the relevant authorities'
+        },{
+            code: 'OTHER', description: 'Any other measure to recover lost gear'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    }
+
+    this.getVesselRole = function(){
+        var codeList = [{
+            code: 'CATCHING_VESSEL', description: 'The catching vessel'
+        },{
+            code: 'PARTICIPATING_VESSEL', description: 'The participating vessel'
+        },{
+            code: 'PAIR_FISHING_PARTNER', description: 'The pair fishing partner'
+        },{
+            code: 'AUXILIARY', description: 'An auxiliary vessel that helped with the operation without taking catches on board or being allocated catches'
+        },{
+            code: 'DONOR', description: 'The donor vessel off-loading catches in transhipment and relocation operations'
+        },{
+            code: 'RECEIVER', description: 'The receiver vessel on-loading catches in transhipment and relocation operations'
+        }];
+        
+        return genSchema.getPaginationSchema(codeList);
+    };
 };
 
 module.exports = mdrSchema;
