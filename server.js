@@ -19,6 +19,9 @@ var mdr = new mdrSchema();
 var actSchema = require('./schemas/activitySchema.js');
 var act = new actSchema();
 
+var exchangeSchema = require('./schemas/exchangeSchema.js');
+var exc = new exchangeSchema();
+
 //Base configuration
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -117,11 +120,18 @@ actRoutes.get('/fadetails/:fatype', function (req, res) {
             break;
     }
     res.json(data);
-})
+});
+  
+//EXCHANGE ROUTES
+var exchangeRoutes = express.Router();
+exchangeRoutes.post('/list', function(req, res){
+    res.json(exc.getLogList(req.body.pagination.page));
+});
 
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
+app.use('/mock/exchange', exchangeRoutes)
 
 var port = 8081;
 app.listen(port);
