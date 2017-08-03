@@ -128,6 +128,10 @@ exchangeRoutes.post('/list', function(req, res){
     res.json(exc.getLogList(req.body.pagination.page));
 });
 
+exchangeRoutes.get('/message/:guid', function(req, res){
+    res.json(exc.getRawMessage(req.params.guid));
+});
+
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
