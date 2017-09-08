@@ -136,6 +136,10 @@ exchangeRoutes.get('/validation/:guid', function(req, res){
     res.json(exc.getValidation(req.params.guid));
 });
 
+exchangeRoutes.get('/log/:guid', function(req, res){
+    res.json(exc.getLogItem(req.params.guid));
+});
+
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
