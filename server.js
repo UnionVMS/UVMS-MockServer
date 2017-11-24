@@ -22,6 +22,9 @@ var act = new actSchema();
 var exchangeSchema = require('./schemas/exchangeSchema.js');
 var exc = new exchangeSchema();
 
+var subscriptionsSchema = require('./schemas/subscriptionsSchema.js');
+var sub = new subscriptionsSchema();
+
 //Base configuration
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -136,10 +139,22 @@ exchangeRoutes.get('/validation/:guid', function(req, res){
     res.json(exc.getValidation(req.params.guid));
 });
 
+//SUBSCRIPTIONS ROUTES
+
+var subscriptionsRoutes = express.Router();
+subscriptionsRoutes.get('/newSubscription/:guid', function(req, res){
+    res.json(sub.subscriptionForm(req.params.guid));
+});
+
+subscriptionsRoutes.get('/OrganizationData/:guid', function(req, res){
+    res.json(sub.getOrganizationData(req.params.guid));
+});
+
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
 app.use('/mock/exchange', exchangeRoutes)
+app.use('/mock/subscriptions', subscriptionsRoutes)
 
 var port = 8081;
 app.listen(port);
