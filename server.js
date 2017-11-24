@@ -139,6 +139,10 @@ exchangeRoutes.get('/validation/:guid', function(req, res){
     res.json(exc.getValidation(req.params.guid));
 });
 
+exchangeRoutes.get('/log/:guid', function(req, res){
+    res.json(exc.getLogItem(req.params.guid));
+});
+
 //SUBSCRIPTIONS ROUTES
 
 var subscriptionsRoutes = express.Router();

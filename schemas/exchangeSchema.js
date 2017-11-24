@@ -16,51 +16,52 @@ var getXml = function(){
 
 
 var exchangeSchema = function(){
-    this.getLogList =  function(page){
-        var schema = {
-            type: 'array',
-            minItems: 5,
-            maxItems: 25,
-            items: {
-                type: 'object',
-                properties: {
-                    dateFwd: {
-                        type: 'string',
-                        format: 'fakeDateServer'
-                    },
-                    dateRecieved: {
-                        type: 'string',
-                        format: 'fakeDateServer'
-                    },
-                    id: {
-                        type: 'string',
-                        chance: 'guid'
-                    },
-                    incoming: {
-                        type: 'boolean'
-                    },
-                    senderRecipient: {
-                        type: 'string',
-                        faker: 'internet.email'
-                    },
-                    source: {
-                        type: 'string',
-                        pattern:  'Inmarsat-C|FLUX'
-                    },
-                    status: {
-                        type: 'string',
-                        pattern: 'FAILED|WARN|ERROR'
-                        //pattern: 'SUCCESSFUL|FAILED|ISSUED|STARTED|STOPPED|ONLINE|OFFLINE|OK|WARN|ERROR|SENT'
-                    },
-                    type: {
-                        type: 'string',
-                        pattern: 'RECEIVED MOVEMENT|SENT MOVEMENT|SENT POLL|SENT EMAIL|Flux FA Report Msg|Flux FA Query Msg|Flux FA Response Msg'
-                    },
-                    recipient: {
-                        type: 'string',
-                        pattern: 'TESTDATA'
-                    },
-                    logData: {
+
+    this.getLog =  function(){
+        return {
+            type: 'object',
+            properties: {
+                dateFwd: {
+                    type: 'string',
+                    format: 'fakeDateServer'
+                },
+                dateRecieved: {
+                    type: 'string',
+                    format: 'fakeDateServer'
+                },
+                id: {
+                    type: 'string',
+                    chance: 'guid'
+                },
+                incoming: {
+                    type: 'boolean'
+                },
+                senderRecipient: {
+                    type: 'string',
+                    faker: 'internet.email'
+                },
+                source: {
+                    type: 'string',
+                    pattern:  'Inmarsat-C|FLUX'
+                },
+                status: {
+                    type: 'string',
+                    pattern: 'FAILED|WARN|ERROR'
+                    //pattern: 'SUCCESSFUL|FAILED|ISSUED|STARTED|STOPPED|ONLINE|OFFLINE|OK|WARN|ERROR|SENT'
+                },
+                type: {
+                    type: 'string',
+                    pattern: 'RECEIVED MOVEMENT|SENT MOVEMENT|SENT POLL|SENT EMAIL|Flux FA Report Msg|Flux FA Query Msg|Flux FA Response Msg'
+                },
+                recipient: {
+                    type: 'string',
+                    pattern: 'TESTDATA'
+                },
+                logData: {
+                    type: 'array',
+                    minItems: 1,
+                    maxItems: 3,
+                    items: {
                         type: 'object',
                         properties: {
                             guid: {
@@ -74,18 +75,37 @@ var exchangeSchema = function(){
                             }
                         },
                         required: ['guid', 'type']
-                    },
-                    rule: {
-                        type: 'string',
-                        pattern: 'TESTDATA-RULE'
                     }
                 },
-                required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type']
-            }
+                rule: {
+                    type: 'string',
+                    pattern: 'TESTDATA-RULE'
+                }
+            },
+            required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type']
+        };
+
+    }
+
+    this.getLogItem =  function(guid){
+        var schema = this.getLog();
+
+        var data = jsf(schema);
+        data.id = guid;
+
+        return genSchema.getSchemaForExchange(data);
+    }
+
+    this.getLogList =  function(page){
+        var schema = {
+            type: 'array',
+            minItems: 5,
+            maxItems: 25,
+            items: this.getLog()
         };
         
         var data = jsf(schema);
-        
+
         var listObj = {
             currentPage: page,
             totalNumberOfPages: 4,
@@ -118,6 +138,7 @@ var exchangeSchema = function(){
         
         return genSchema.getSimpleSchema(data);
     }
+
 };
 
 module.exports = exchangeSchema;
