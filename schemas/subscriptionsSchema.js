@@ -13,13 +13,14 @@ var subscriptionsSchema = function () {
         var schema = {
             type: 'object',
             properties: {
-                name: "Donald",
-                organization: " ",
-                subscriptionType: " ",
-                endPoint: " ",
+                name: "meera",
+                isActive: true,
+                organization: "organization1",
+                subscriptionType: "Tx-Push",
+                endPoint: "end Point4",
                 commChannel: "Flux",
-                messageType: " ",
-                accessibility: " ",
+                messageType: "Message type",
+                accessibility: "accessibility",
                 retryDelay: "Retry Delay",
                 description: "I need subscription"
             },
@@ -30,67 +31,67 @@ var subscriptionsSchema = function () {
         return genSchema.getSimpleSchema(data);
     }
 
-    this.getOrganizationData = function () {
+    this.getFormComboData = function () {
         var schema = {
             type: 'object',
             properties: {
                 organization: [{
                     "text": "organization1",
-                    "code": "org1"
+                    "code": "organization1"
                 }, {
                     "text": "organization2",
-                    "code": "org1"
+                    "code": "organization2"
                 },
                 {
                     "text": "organization3",
-                    "code": "org1"
+                    "code": "organization3"
                 },
                 {
                     "text": "organization4",
-                    "code": "org1"
+                    "code": "organization4"
                 }
                 ],
                 subscriptionType: [{
                     "text": "Tx-Push",
-                    "code": "TX"
+                    "code": "Tx-Push"
                 }, {
                     "text": "Tx-Push1",
-                    "code": "TX1"
+                    "code": "Tx-Push1"
                 },
                 {
                     "text": "Tx-Push2",
-                    "code": "TX2"
+                    "code": "Tx-Push2"
                 },
                 {
                     "text": "Tx-Push3",
-                    "code": "TX3"
+                    "code": "Tx-Push2"
                 }
                 ],
                 endPoint: [{
                     "text": "end Point1",
-                    "code": "EP1"
+                    "code": "end Point1"
                 }, {
                     "text": "end Point2",
-                    "code": "TX1"
+                    "code": "end Point2"
                 }, {
                     "text": "end Point3",
-                    "code": "TX2"
+                    "code": "end Point3"
                 }, {
                     "text": "end Point4",
-                    "code": "TX3"
+                    "code": "end Point4"
                 }],
                 accessibility: [{
                     "text": "accessibility",
-                    "code": "acc1"
+                    "code": "accessibility"
                 }, {
                     "text": "accessibility1",
-                    "code": "acc1"
+                    "code": "accessibility1"
                 }, {
                     "text": "accessibility2",
-                    "code": "acc2"
+                    "code": "accessibility2"
                 }, {
                     "text": "accessibility3",
-                    "code": "acc3"
+                    "code": "accessibility3"
                 }],
                 commChannel: [{
                     "text": "Manual",
@@ -101,10 +102,10 @@ var subscriptionsSchema = function () {
                 }],
                 messageType: [{
                     "text": "Message type",
-                    "code": "MT1"
+                    "code": "Message type"
                 }, {
-                    "text": "Message type",
-                    "code": "MT2"
+                    "text": "Message type1",
+                    "code": "Message type1"
                 }]
 
 

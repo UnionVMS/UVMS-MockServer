@@ -150,8 +150,8 @@ subscriptionsRoutes.get('/newSubscription/:guid', function(req, res){
     res.json(sub.subscriptionForm(req.params.guid));
 });
 
-subscriptionsRoutes.get('/OrganizationData/:guid', function(req, res){
-    res.json(sub.getOrganizationData(req.params.guid));
+subscriptionsRoutes.get('/formComboData/:guid', function(req, res){
+    res.json(sub.getFormComboData(req.params.guid));
 });
 
 //APP ROUTES
