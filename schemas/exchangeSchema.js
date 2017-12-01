@@ -46,21 +46,41 @@ var exchangeSchema = function(){
                 },
                 status: {
                     type: 'string',
-                    pattern: 'FAILED|WARN|ERROR'
-                    //pattern: 'SUCCESSFUL|FAILED|ISSUED|STARTED|STOPPED|ONLINE|OFFLINE|OK|WARN|ERROR|SENT'
+                    pattern: 'SENT'
+                    //pattern: 'SUCCESSFUL|FAILED|ISSUED|SUCCESSFUL_WITH_WARNINGS|PENDING|PROBABLY_TRANSMITTED|UNKNOWN|UNPROCESSED|OK|WARN|ERROR|SENT'
                 },
                 type: {
                     type: 'string',
-                    pattern: 'RECEIVED MOVEMENT|SENT MOVEMENT|SENT POLL|SENT EMAIL|Flux FA Report Msg|Flux FA Query Msg|Flux FA Response Msg'
+                    pattern: 'SEND_MOVEMENT|SEND_EMAIL|SEND_POLL|RECEIVE_SALES_REPORT|RECEIVE_SALES_QUERY|RECEIVE_SALES_RESPONSE|SEND_SALES_RESPONSE|SEND_SALES_REPORT|SEND_FLUX_FA_REPORT_MSG|RCV_FLUX_FA_REPORT_MSG|RECEIVE_FLUX_RESPONSE_MSG|SEND_FLUX_RESPONSE_MSG|SEND_FA_QUERY_MSG|RECEIVE_FA_QUERY_MSG'
                 },
                 recipient: {
                     type: 'string',
                     pattern: 'TESTDATA'
                 },
+                typeRefType: {
+                    type: 'string',
+                    //pattern: 'FA_QUERY|FA_REPORT|FA_RESPONSE'
+                    pattern: 'MOVEMENT|POLL|ALARM|UNKNOWN|SALES_QUERY|SALES_REPORT|SALES_RESPONSE|FA_QUERY|FA_REPORT|FA_RESPONSE'
+                },
                 logData: {
+                    type: 'object',
+                    properties: {
+                        guid: {
+                            type: 'string',
+                            chance: 'guid'
+                        },
+                        type: {
+                            type: 'string',
+                            pattern: 'MOVEMENT|POLL|ALARM|UNKNOWN'
+                            //pattern: 'MOVEMENT'
+                        }
+                    },
+                    required: ['guid', 'type']
+                },
+                relatedLogData: {
                     type: 'array',
                     minItems: 1,
-                    maxItems: 3,
+                    maxItems: 2,
                     items: {
                         type: 'object',
                         properties: {
@@ -70,8 +90,8 @@ var exchangeSchema = function(){
                             },
                             type: {
                                 type: 'string',
-                                pattern: 'FA_QUERY|FA_REPORT|FA_RESPONSE'
-                                //pattern: 'MOVEMENT|POLL|ALARM|UNKNOWN|SALES_QUERY|SALES_REPORT|SALES_RESPONSE|FA_QUERY|FA_REPORT|FA_RESPONSE'
+                                pattern: 'FA_REPORT|FA_RESPONSE'
+                                //pattern: 'SALES_REPORT|SALES_RESPONSE|FA_QUERY|FA_REPORT|FA_RESPONSE'
                             }
                         },
                         required: ['guid', 'type']
@@ -82,7 +102,7 @@ var exchangeSchema = function(){
                     pattern: 'TESTDATA-RULE'
                 }
             },
-            required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type']
+            required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type', 'typeRefType']
         };
 
     }
