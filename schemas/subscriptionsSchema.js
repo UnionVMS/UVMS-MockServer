@@ -22,9 +22,15 @@ var subscriptionsSchema = function () {
                 messageType: "Message type",
                 accessibility: "accessibility",
                 retryDelay: "Retry Delay",
-                description: "I need subscription"
+                description: "I need subscription",
+                queryParams: {
+                    vesselId: "vessel ID 1",
+                    includeCorrectionHist: true, 
+                    time: 5,
+                    timeUnit: "hours"
+                }
             },
-            required: ['name', 'organization', 'subscriptionType', 'endPoint', 'commChannel', 'messageType', 'description', 'accessibility','retryDelay']
+            required: ['name', 'organization', 'subscriptionType', 'endPoint', 'commChannel', 'messageType', 'description', 'accessibility','retryDelay','queryParams']
         };
         var data = jsf(schema);
 
@@ -55,16 +61,8 @@ var subscriptionsSchema = function () {
                     "text": "Tx-Push",
                     "code": "Tx-Push"
                 }, {
-                    "text": "Tx-Push1",
-                    "code": "Tx-Push1"
-                },
-                {
-                    "text": "Tx-Push2",
-                    "code": "Tx-Push2"
-                },
-                {
-                    "text": "Tx-Push3",
-                    "code": "Tx-Push2"
+                    "text": "Tx-Pull",
+                    "code": "Tx-Pull"
                 }
                 ],
                 endPoint: [{
