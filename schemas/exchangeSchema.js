@@ -46,7 +46,7 @@ var exchangeSchema = function(){
                 },
                 status: {
                     type: 'string',
-                    pattern: 'SENT'
+                    pattern: 'ERROR'
                     //pattern: 'SUCCESSFUL|FAILED|ISSUED|SUCCESSFUL_WITH_WARNINGS|PENDING|PROBABLY_TRANSMITTED|UNKNOWN|UNPROCESSED|OK|WARN|ERROR|SENT'
                 },
                 type: {
@@ -91,7 +91,7 @@ var exchangeSchema = function(){
                             type: {
                                 type: 'string',
                                 pattern: 'FA_REPORT|FA_RESPONSE'
-                                //pattern: 'SALES_REPORT|SALES_RESPONSE|FA_QUERY|FA_REPORT|FA_RESPONSE'
+                                //pattern: 'SALES_REPORT|SALES_RESPONSE|FA_REPORT|FA_RESPONSE'
                             }
                         },
                         required: ['guid', 'type']
@@ -102,7 +102,7 @@ var exchangeSchema = function(){
                     pattern: 'TESTDATA-RULE'
                 }
             },
-            required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type', 'typeRefType']
+            required: ['dateFwd', 'dateRecieved', 'id', 'incoming', 'senderRecipient','status', 'type', 'typeRefType', 'relatedLogData']
         };
 
     }
