@@ -19,6 +19,12 @@ var mdr = new mdrSchema();
 var actSchema = require('./schemas/activitySchema.js');
 var act = new actSchema();
 
+var exchangeSchema = require('./schemas/exchangeSchema.js');
+var exc = new exchangeSchema();
+
+var subscriptionsSchema = require('./schemas/subscriptionsSchema.js');
+var sub = new subscriptionsSchema();
+
 //Base configuration
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -117,11 +123,42 @@ actRoutes.get('/fadetails/:fatype', function (req, res) {
             break;
     }
     res.json(data);
-})
+});
+  
+//EXCHANGE ROUTES
+var exchangeRoutes = express.Router();
+exchangeRoutes.post('/list', function(req, res){
+    res.json(exc.getLogList(req.body.pagination.page));
+});
+
+exchangeRoutes.get('/message/:guid', function(req, res){
+    res.json(exc.getRawMessage(req.params.guid));
+});
+
+exchangeRoutes.get('/validation/:guid', function(req, res){
+    res.json(exc.getValidation(req.params.guid));
+});
+
+exchangeRoutes.get('/log/:guid', function(req, res){
+    res.json(exc.getLogItem(req.params.guid));
+});
+
+//SUBSCRIPTIONS ROUTES
+
+var subscriptionsRoutes = express.Router();
+subscriptionsRoutes.get('/newSubscription/:guid', function(req, res){
+    res.json(sub.subscriptionForm(req.params.guid));
+});
+
+subscriptionsRoutes.get('/formComboData/:guid', function(req, res){
+    res.json(sub.getFormComboData(req.params.guid));
+});
 
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
+app.use('/mock/exchange', exchangeRoutes)
+app.use('/mock/subscriptions', subscriptionsRoutes)
 
 var port = 8081;
 app.listen(port);

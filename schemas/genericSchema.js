@@ -28,6 +28,15 @@ var genericSchema = function(){
         
         return schema;
     };
+    
+    this.getSchemaForExchange = function(data){
+        var schema = {
+            code: 200,
+            data: data
+        };
+        
+        return schema;
+    };
 };
 
 module.exports = genericSchema;
