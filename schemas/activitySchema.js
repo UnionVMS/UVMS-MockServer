@@ -1488,9 +1488,13 @@ var activitySchema = function () {
                         type: 'object',
                         properties: {
                             onboard: getEvolutionData(),
-                            cumulated: getEvolutionData()
+                            cumulated: getEvolutionData(),
+                            activityType: {
+                                type: 'string',
+                                pattern: 'TRANSHIPMENT|FISHING_OPERATION|DISCARD|RELOCATION|JOINT_FISHING_OPERATION'
+                            }
                         },
-                        required: ['onboard', 'cumulated']
+                        required: ['onboard', 'cumulated', 'activityType']
                     }
                 }
             },
