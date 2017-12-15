@@ -128,9 +128,9 @@ var subscriptionsSchema = function () {
                     type: 'string',
                     faker: 'lorem.word'
                 },
-                type: {
+                subscriptionType: {
                     type: 'string',
-                    pattern: 'TRANSMITTING|RECEIVING'
+                    pattern: 'TX_PULL|TX_PUSH'
                 },
                 description: {
                     type: 'string',
@@ -150,11 +150,11 @@ var subscriptionsSchema = function () {
                 },
                 startDate: {
                     type: 'string',
-                    formate: 'fakeDateServer'
+                    format: 'fakeDateServer'
                 },
                 endDate: {
                     type: 'string',
-                    formate: 'fakeDateServer'
+                    format: 'fakeDateServer'
                 },
                 accessibility: {
                     type: 'string',
@@ -164,7 +164,7 @@ var subscriptionsSchema = function () {
                     type: 'boolean'
                 }
             },
-            required: ['name', 'type', 'description', 'organization', 'endpoint', 'communicationChannel', 'startDate', 'endDate', 'accessibility', 'isActive']
+            required: ['name', 'subscriptionType', 'description', 'organization', 'endpoint', 'communicationChannel', 'startDate', 'endDate', 'accessibility', 'isActive']
         }
     }
     
