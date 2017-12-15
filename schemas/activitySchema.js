@@ -17,7 +17,7 @@ var u = require('underscore');
 var globSchema = require('./genericSchema.js');
 var genSchema = new globSchema();
 var moment = require('moment');
-var species, speciesCodes, gears, weightMeans, catchTypes, presentation, preservation, freshness, packaging;
+var species, speciesCodes, gears, weightMeans, catchTypes, presentation, preservation, freshness, packaging, activityType;
 
 function initSpecies() {
     species = ['BEAGLE', 'SEAFOOD', 'GADUS', 'CODFISH', 'HADDOCK'];
@@ -33,6 +33,10 @@ function initGears() {
 
 function initWeights() {
     weightMeans = ['ONBOARD', 'WEIGHED', 'ESTIMATED', 'SAMPLING', 'STEREOSCOPIC'];
+}
+
+function initActivityType() {
+    activityType = ['DEPARTURE', 'AREA_ENTRY', 'AREA_EXIT', 'FISHING_OPERATION', 'JOINT_FISHING_OPERATION','DISCARD','RELOCATION','TRANSHIPMENT','ARRIVAL','LANDING'];
 }
 
 function initCatchTypes() {
@@ -1164,6 +1168,12 @@ jsf.format('weightMeans', function (gen, schema) {
     return weightToUse[0];
 });
 
+jsf.format('activityTypeName', function (gen, schema) {
+    var idx = Math.floor(Math.random() * activityType.length);
+    var activityToUse = activityType.splice(idx, 1);
+    return activityToUse[0];
+});
+
 jsf.format('catchType', function (gen, schema) {
     var idx = Math.floor(Math.random() * catchTypes.length);
     var type = catchTypes.splice(idx, 1);
@@ -1468,7 +1478,7 @@ var activitySchema = function () {
     };
 
     this.getTripCatchesEvolution = function () {
-
+        initActivityType();
         var schema = {
             type: 'object',
             properties: {
@@ -1482,19 +1492,64 @@ var activitySchema = function () {
                 },
                 catchProgress: {
                     type: 'array',
-                    minItems: 5,
+                    minItems: 10,
                     maxItems: 10,
                     items: {
                         type: 'object',
                         properties: {
                             onboard: getEvolutionData(),
-                            cumulated: getEvolutionData()
+                            cumulated: getEvolutionData(),
+                            activityType: {
+                                type: 'string',
+                                format: 'activityTypeName'
+                            }
                         },
-                        required: ['onboard', 'cumulated']
+                        required: ['onboard', 'cumulated', 'activityType']
                     }
+                },
+                tripDetails: {
+                    vesselDetails: {
+                        name: 'Echo',
+                        country: 'SVN',
+                        contactParties: [{
+                            role: 'MASTER',
+                            contactPerson: {
+                                alias: 'Master E',
+                                firstName: 'Jake',
+                                lastName: 'E'
+                            },
+                            structuredAddress: [{
+                                cityName: 'City L',
+                                streetName: 'Street K',
+                                countryCode: 'SVN'
+                            }]
+                        }],
+                        vesselIds: [{
+                            id: 2543,
+                            schemeId: "ICCAT"
+                        }, {
+                            id: 87879,
+                            schemeId: "IRCS"
+                        }, {
+                            id: 74334,
+                            schemeId: "EXT_MARK"
+                        }, {
+                            id: 34434,
+                            schemeId: "CFR"
+                        }],
+                        authorizations: []
+                    },
+                    trips: [{
+                        tripId: [{
+                            id: 344,
+                            schemeId: "EU_TRIP_ID"
+                        }],
+                        departureTime: "2017-06-22T07:30:00",
+                        arrivalTime: "2017-06-27T22:45:00"
+                    }]
                 }
             },
-            required: ['finalCatch', 'catchProgress']
+            required: ['finalCatch', 'catchProgress','tripDetails']
         };
 
         var data = jsf(schema);

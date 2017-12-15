@@ -6,6 +6,10 @@ var moment = require('moment');
 var globSchema = require('./genericSchema.js');
 var genSchema = new globSchema();
 
+jsf.format('fakeDateServer', function (gen, schema) {
+    var random = gen.faker.date.between(gen.faker.date.past(2), gen.faker.date.future(2));
+    return moment(random).format('YYYY-MM-DDTHH:mm:ss');
+});
 
 var subscriptionsSchema = function () {
 
@@ -114,6 +118,73 @@ var subscriptionsSchema = function () {
         var data = jsf(schema);
 
         return genSchema.getSimpleSchema(data);
+    }
+    
+    this.getSubscription = function(){
+        return {
+            type: 'object',
+            properties: {
+                name: {
+                    type: 'string',
+                    faker: 'lorem.word'
+                },
+                type: {
+                    type: 'string',
+                    pattern: 'TRANSMITTING|RECEIVING'
+                },
+                description: {
+                    type: 'string',
+                    faker: 'lorem.sentence'
+                },
+                organization: {
+                    type: 'string',
+                    chance: 'country'
+                },
+                endpoint: {
+                    type: 'string',
+                    pattern: 'FLUX'
+                },
+                communicationChannel: {
+                    type: 'string',
+                    pattern: 'DF'
+                },
+                startDate: {
+                    type: 'string',
+                    formate: 'fakeDateServer'
+                },
+                endDate: {
+                    type: 'string',
+                    formate: 'fakeDateServer'
+                },
+                accessibility: {
+                    type: 'string',
+                    pattern: 'PRIVATE|PUBLIC|SCOPE'
+                },
+                isActive: {
+                    type: 'boolean'
+                }
+            },
+            required: ['name', 'type', 'description', 'organization', 'endpoint', 'communicationChannel', 'startDate', 'endDate', 'accessibility', 'isActive']
+        }
+    }
+    
+    this.getSubsList =  function(page){
+        var schema = {
+            type: 'array',
+            minItems: 5,
+            maxItems: 25,
+            items: this.getSubscription()
+        };
+        
+        var data = jsf(schema);
+
+        var listObj = {
+            currentPage: page,
+            totalNumberOfPages: 4,
+            subscriptionList: data
+        };
+        
+        return genSchema.getSchemaForExchange(listObj);
     }
 };
 module.exports = subscriptionsSchema;

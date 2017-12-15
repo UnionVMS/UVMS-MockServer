@@ -154,6 +154,10 @@ subscriptionsRoutes.get('/formComboData/:guid', function(req, res){
     res.json(sub.getFormComboData(req.params.guid));
 });
 
+subscriptionsRoutes.post('/list', function(req, res){
+    res.json(sub.getSubsList(req.body.pagination.offset));
+});
+
 //APP ROUTES
 app.use('/mock/mdr', mdrRoutes);
 app.use('/mock/activity', actRoutes);
